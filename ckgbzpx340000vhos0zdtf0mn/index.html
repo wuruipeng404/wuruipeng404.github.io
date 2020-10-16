@@ -20,21 +20,21 @@
     var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","scheme":"Mist","version":"8.0.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 
-  <meta name="description" content="firewalld的基本使用 启动: systemctl start firewalld 关闭: systemctl stop firewalld 查看状态: systemctl status firewalld 开机禁用: systemctl disable firewalld 开机启用: systemctl enable firewalld">
+  <meta name="description" content="&amp;#160;&amp;#160;&amp;#160;&amp;#160;我们都知道一个正常的golang程序部署上线的流程大致如下，编译为二进制文件，上传服务器运行。当然这些流程可以通过自动化发布平台去自动完成，当然如果你使用docker的话，则是去构建镜像，当然这一流程也可以继承到CI/CD平台中去自动化完成。用K8S就更简单了，扯远了。。。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Firewalld防火墙操作手册">
-<meta property="og:url" content="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/index.html">
+<meta property="og:title" content="Golang程序实现自动更新">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckgbzpx340000vhos0zdtf0mn/index.html">
 <meta property="og:site_name" content="Rumplestiltskin's Home">
-<meta property="og:description" content="firewalld的基本使用 启动: systemctl start firewalld 关闭: systemctl stop firewalld 查看状态: systemctl status firewalld 开机禁用: systemctl disable firewalld 开机启用: systemctl enable firewalld">
+<meta property="og:description" content="&amp;#160;&amp;#160;&amp;#160;&amp;#160;我们都知道一个正常的golang程序部署上线的流程大致如下，编译为二进制文件，上传服务器运行。当然这些流程可以通过自动化发布平台去自动完成，当然如果你使用docker的话，则是去构建镜像，当然这一流程也可以继承到CI/CD平台中去自动化完成。用K8S就更简单了，扯远了。。。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-10-14T08:30:18.000Z">
-<meta property="article:modified_time" content="2020-10-14T08:57:38.371Z">
+<meta property="article:published_time" content="2020-10-16T08:03:06.000Z">
+<meta property="article:modified_time" content="2020-10-16T08:31:50.275Z">
 <meta property="article:author" content="Rumple">
-<meta property="article:tag" content="firewalld">
+<meta property="article:tag" content="Golang">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/">
+<link rel="canonical" href="https://wuruipeng404.github.io/ckgbzpx340000vhos0zdtf0mn/">
 
 
 <script class="page-configurations">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>Firewalld防火墙操作手册 | Rumplestiltskin's Home</title>
+  <title>Golang程序实现自动更新 | Rumplestiltskin's Home</title>
   
 
 
@@ -168,7 +168,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -180,7 +180,6 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#firewalld%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">firewalld的基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEfirewalld-cmd"><span class="nav-number">2.</span> <span class="nav-text">配置firewalld-cmd</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.</span> <span class="nav-text">开启端口</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -262,7 +261,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckgbzpx340000vhos0zdtf0mn/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -275,7 +274,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Firewalld防火墙操作手册
+          Golang程序实现自动更新
         </h1>
 
         <div class="post-meta-container">
@@ -287,7 +286,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-10-14 16:30:18 / 修改时间：16:57:38" itemprop="dateCreated datePublished" datetime="2020-10-14T16:30:18+08:00">2020-10-14</time>
+      <time title="创建时间：2020-10-16 16:03:06 / 修改时间：16:31:50" itemprop="dateCreated datePublished" datetime="2020-10-16T16:03:06+08:00">2020-10-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -295,7 +294,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">操作指南</span></a>
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
         </span>
     </span>
 
@@ -316,53 +315,82 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h4 id="firewalld的基本使用"><a href="#firewalld的基本使用" class="headerlink" title="firewalld的基本使用"></a>firewalld的基本使用</h4><ul>
-<li>启动: <code>systemctl start firewalld</code></li>
-<li>关闭: <code>systemctl stop firewalld</code></li>
-<li>查看状态: <code>systemctl status firewalld</code></li>
-<li>开机禁用: <code>systemctl disable firewalld</code></li>
-<li>开机启用: <code>systemctl enable firewalld</code></li>
-</ul>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;我们都知道一个正常的golang程序部署上线的流程大致如下，编译为二进制文件，上传服务器运行。当然这些流程可以通过自动化发布平台去自动完成，当然如果你使用docker的话，则是去构建镜像，当然这一流程也可以继承到CI/CD平台中去自动化完成。用K8S就更简单了，扯远了。。。</p>
 <a id="more"></a>
+<p>假如我们就想实现一个不登录服务器，去通过暴露一个接口让程序自动更新他自己呢？</p>
+<ol>
+<li><p>go run + 监控文件变动<br>之前有看到一个库是用来监测go源代码变动的，如果有变动则会使变动实时生效，不过这个库是什么我忘了。这种方式比较奇葩。因为这样的话就意味着你的go程序 是没有编译，使用go run的形式跑在服务器的。这种我还不如用python对吧。当然了python程序也可以编译后在运行呢。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/jpillora/overseer">jpillora/overseer</a><br>这是一个开源的组件，用来实现上述需求。同类型的项目还有<a target="_blank" rel="noopener" href="https://godoc.org/github.com/cloudflare/tableflip">https://godoc.org/github.com/cloudflare/tableflip</a>,这里我们暂时不研究他。</p>
+<ul>
+<li><p>原理：<br>通过fork一个子进程去执行main函数中的程序逻辑，所有的请求会通过当前的主进程（也就是 监听进程），通过队列通道下放到子进程（也就是我们自己真正的进程）中取执行 。</p>
+</li>
+<li><p>废话少说：撸代码。</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+  <span class="token string">"fmt"</span>
+  <span class="token string">"github.com/gin-gonic/gin"</span>
+  <span class="token string">"github.com/jpillora/overseer"</span>
+  <span class="token string">"github.com/jpillora/overseer/fetcher"</span>
+  <span class="token string">"io/ioutil"</span>
+  <span class="token string">"net/http"</span>
+  <span class="token string">"time"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">var</span> <span class="token punctuation">(</span>
+  BuildID <span class="token builtin">string</span> <span class="token operator">=</span> <span class="token string">"0"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  overseer<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span>overseer<span class="token punctuation">.</span>Config<span class="token punctuation">{</span>
+    Program<span class="token punctuation">:</span> program<span class="token punctuation">,</span>
+    Address<span class="token punctuation">:</span> <span class="token string">":8080"</span><span class="token punctuation">,</span>
+    Fetcher<span class="token punctuation">:</span> <span class="token operator">&amp;</span>fetcher<span class="token punctuation">.</span>HTTP<span class="token punctuation">{</span>
+      URL<span class="token punctuation">:</span>      <span class="token string">"http://localhost:4000/bin/app"</span><span class="token punctuation">,</span>
+      Interval<span class="token punctuation">:</span> <span class="token number">3</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    Debug<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">program</span><span class="token punctuation">(</span>state overseer<span class="token punctuation">.</span>State<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  r <span class="token operator">:=</span> gin<span class="token punctuation">.</span><span class="token function">Default</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  r<span class="token punctuation">.</span><span class="token function">GET</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>c <span class="token operator">*</span>gin<span class="token punctuation">.</span>Context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    c<span class="token punctuation">.</span><span class="token function">JSON</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">,</span> gin<span class="token punctuation">.</span>H<span class="token punctuation">{</span><span class="token string">"正在运行版本"</span><span class="token punctuation">:</span> BuildID<span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+  <span class="token comment">// 通过接口上传更新后的版本，触发overseer去自动更新</span>
+  r<span class="token punctuation">.</span><span class="token function">Any</span><span class="token punctuation">(</span><span class="token string">"/bin/app"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>c <span class="token operator">*</span>gin<span class="token punctuation">.</span>Context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> b<span class="token punctuation">,</span> err <span class="token operator">:=</span> ioutil<span class="token punctuation">.</span><span class="token function">ReadFile</span><span class="token punctuation">(</span><span class="token string">"path/main"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+      c<span class="token punctuation">.</span><span class="token function">JSON</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">,</span> gin<span class="token punctuation">.</span>H<span class="token punctuation">{</span><span class="token string">"msg"</span><span class="token punctuation">:</span> err<span class="token punctuation">.</span><span class="token function">Error</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      c<span class="token punctuation">.</span>Writer<span class="token punctuation">.</span><span class="token function">WriteHeader</span><span class="token punctuation">(</span>http<span class="token punctuation">.</span>StatusOK<span class="token punctuation">)</span>
+      c<span class="token punctuation">.</span><span class="token function">Header</span><span class="token punctuation">(</span><span class="token string">"Content-Disposition"</span><span class="token punctuation">,</span> <span class="token string">"attachment; filename=main"</span><span class="token punctuation">)</span>
+      c<span class="token punctuation">.</span><span class="token function">Header</span><span class="token punctuation">(</span><span class="token string">"Content-Type"</span><span class="token punctuation">,</span> <span class="token string">"application/octet-stream"</span><span class="token punctuation">)</span>
+      c<span class="token punctuation">.</span><span class="token function">Header</span><span class="token punctuation">(</span><span class="token string">"Content-Length"</span><span class="token punctuation">,</span> fmt<span class="token punctuation">.</span><span class="token function">Sprintf</span><span class="token punctuation">(</span><span class="token string">"%d"</span><span class="token punctuation">,</span> <span class="token function">len</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+      <span class="token keyword">if</span> c<span class="token punctuation">.</span>Request<span class="token punctuation">.</span>Method <span class="token operator">==</span> <span class="token string">"HEAD"</span> <span class="token punctuation">{</span>
+        c<span class="token punctuation">.</span><span class="token function">Header</span><span class="token punctuation">(</span><span class="token string">"ETag"</span><span class="token punctuation">,</span> <span class="token string">"v002"</span><span class="token punctuation">)</span>
+        c<span class="token punctuation">.</span><span class="token function">Status</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token boolean">_</span><span class="token punctuation">,</span> <span class="token boolean">_</span> <span class="token operator">=</span> c<span class="token punctuation">.</span>Writer<span class="token punctuation">.</span><span class="token function">Write</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+  <span class="token boolean">_</span> <span class="token operator">=</span> r<span class="token punctuation">.</span><span class="token function">RunListener</span><span class="token punctuation">(</span>state<span class="token punctuation">.</span>Listener<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ul>
-<li><p>启动一个服务：<code>systemctl start firewalld.service</code></p>
-</li>
-<li><p>关闭一个服务：<code>systemctl stop firewalld.service</code></p>
-</li>
-<li><p>重启一个服务：<code>systemctl restart firewalld.service</code></p>
-</li>
-<li><p>显示一个服务的状态：<code>systemctl status firewalld.service</code></p>
-</li>
-<li><p>在开机时启用一个服务：<code>systemctl enable firewalld.service</code></p>
-</li>
-<li><p>在开机时禁用一个服务：<code>systemctl disable firewalld.service</code></p>
-</li>
-<li><p>查看服务是否开机启动：<code>systemctl is-enabled firewalld.service</code></p>
-</li>
-<li><p>查看已启动的服务列表：<code>systemctl list-unit-files|grep enabled</code></p>
-</li>
-<li><p>查看启动失败的服务列表：<code>systemctl --failed</code></p>
+<li>注意: 像此类接口，实际开发过程中一定要注意鉴权，以及校验上传文件的哈希值，确保万无一失。哎，见过太多没有安全意识的小盆友了。</li>
+<li>缺陷: 监听者自身的配置，还是需要手动更新，无法实现自动更新。</li>
+<li>虽然花了一点时间研究，不过在K8S，docker这么好用的今天，这个我也没在实际项目使用，纯当记录吧</li>
+</ul>
 </li>
 </ul>
-<h4 id="配置firewalld-cmd"><a href="#配置firewalld-cmd" class="headerlink" title="配置firewalld-cmd"></a>配置firewalld-cmd</h4><ul>
-<li>查看版本: <code>firewall-cmd --version</code></li>
-<li>查看帮助: <code>firewall-cmd --help</code></li>
-<li>显示状态: <code>firewall-cmd --state</code></li>
-<li>查看所有打开的端口: <code>firewall-cmd --zone=public --list-ports</code></li>
-<li>更新防火墙规则: <code>firewall-cmd --reload</code></li>
-<li>查看区域信息: <code>firewall-cmd --get-active-zones</code></li>
-<li>查看指定接口所属区域: <code>firewall-cmd --get-zone-of-interface=eth0</code></li>
-<li>拒绝所有包: <code>firewall-cmd --panic-on</code></li>
-<li>取消拒绝状态: <code>firewall-cmd --panic-off</code></li>
-<li>查看是否拒绝: <code>firewall-cmd --query-panic</code></li>
-</ul>
-<h4 id="开启端口"><a href="#开启端口" class="headerlink" title="开启端口"></a>开启端口</h4><ul>
-<li>添加: –permanent永久生效，没有此参数重启后失效<br>  <code>firewall-cmd --zone=public --add-port=80/tcp --permanent</code></li>
-<li>重新载入:<br>  <code>firewall-cmd --reload</code></li>
-<li>查看:<br>  <code>firewall-cmd --zone= public --query-port=80/tcp</code></li>
-<li>删除:<br>  <code>firewall-cmd --zone= public --remove-port=80/tcp --permanent</code></li>
-</ul>
+</li>
+</ol>
 
     </div>
 
@@ -398,7 +426,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/" title="Firewalld防火墙操作手册">https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/</a>
+      <a href="https://wuruipeng404.github.io/ckgbzpx340000vhos0zdtf0mn/" title="Golang程序实现自动更新">https://wuruipeng404.github.io/ckgbzpx340000vhos0zdtf0mn/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -407,21 +435,18 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/firewalld/" rel="tag"><i class="fa fa-tag"></i> firewalld</a>
+              <a href="/tags/Golang/" rel="tag"><i class="fa fa-tag"></i> Golang</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/ckg987iy20009uuosfc380006/" rel="prev" title="Vim常用命令">
-                  <i class="fa fa-chevron-left"></i> Vim常用命令
+                <a href="/ckgbxdei80000vgosgdgh9atk/" rel="prev" title="ElasticSearch之ScrollAPI">
+                  <i class="fa fa-chevron-left"></i> ElasticSearch之ScrollAPI
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/ckg987ixx0003uuos0pkfh09i/" rel="next" title="工欲善其事,必先利其器">
-                  工欲善其事,必先利其器 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
