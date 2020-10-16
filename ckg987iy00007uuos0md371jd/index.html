@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<!DOCTYPE html><html lang="zh-CN"><head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
@@ -10,33 +8,33 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/images/icon16.png">
   <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
 
 
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.0/css/all.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+
+  
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","scheme":"Mist","version":"8.0.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 
-  <meta name="description" content="&amp;#160;&amp;#160;&amp;#160;&amp;#160;众所周知,vim是程序员的一款利器. 一些大神可以完全抛弃ide只使用vim去构建庞大的项目. 而对于我来说只是一个工具而已,他不应该耗费我的精力去做配置和学习.强行改变自己的编码习惯.所以这里整理了我日常使用比较多的一些命令.">
+  <meta name="description" content="firewalld的基本使用 启动: systemctl start firewalld 关闭: systemctl stop firewalld 查看状态: systemctl status firewalld 开机禁用: systemctl disable firewalld 开机启用: systemctl enable firewalld">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Vim常用命令">
-<meta property="og:url" content="https://wuruipeng404.github.io/ckg93gveo0006chosatz1ccwq/index.html">
-<meta property="og:site_name" content="Rumplestiltskin&#39;s Home">
-<meta property="og:description" content="&amp;#160;&amp;#160;&amp;#160;&amp;#160;众所周知,vim是程序员的一款利器. 一些大神可以完全抛弃ide只使用vim去构建庞大的项目. 而对于我来说只是一个工具而已,他不应该耗费我的精力去做配置和学习.强行改变自己的编码习惯.所以这里整理了我日常使用比较多的一些命令.">
+<meta property="og:title" content="Firewalld防火墙操作手册">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/index.html">
+<meta property="og:site_name" content="Rumplestiltskin's Home">
+<meta property="og:description" content="firewalld的基本使用 启动: systemctl start firewalld 关闭: systemctl stop firewalld 查看状态: systemctl status firewalld 开机禁用: systemctl disable firewalld 开机启用: systemctl enable firewalld">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-10-14T05:43:56.000Z">
-<meta property="article:modified_time" content="2020-10-14T07:50:20.815Z">
+<meta property="article:published_time" content="2020-10-14T08:30:18.000Z">
+<meta property="article:modified_time" content="2020-10-14T08:57:38.371Z">
 <meta property="article:author" content="Rumple">
-<meta property="article:tag" content="vim">
+<meta property="article:tag" content="firewalld">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://wuruipeng404.github.io/ckg93gveo0006chosatz1ccwq/">
+<link rel="canonical" href="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/">
 
 
 <script class="page-configurations">
@@ -49,7 +47,7 @@
   };
 </script>
 
-  <title>Vim常用命令 | Rumplestiltskin's Home</title>
+  <title>Firewalld防火墙操作手册 | Rumplestiltskin's Home</title>
   
 
 
@@ -92,13 +90,13 @@
   </style>
 </noscript>
 
-</head>
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.0/css/all.min.css');loadCss('//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.0/css/all.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css"></noscript></head>
 
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+<body itemscope="" itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
 
   <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="切换导航栏">
@@ -182,14 +180,13 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5"><span class="nav-number">1.</span> <span class="nav-text">第一阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5"><span class="nav-number">2.</span> <span class="nav-text">第二阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%90%84%E7%A7%8D%E6%8F%92%E5%85%A5%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">各种插入模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%A7%BB%E5%8A%A8%E5%85%89%E6%A0%87"><span class="nav-number">2.2.</span> <span class="nav-text">简单移动光标</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%89%93%E5%BC%80-%E4%BF%9D%E5%AD%98-%E9%80%80%E5%87%BA-%E6%94%B9%E5%8F%98%E6%96%87%E4%BB%B6"><span class="nav-number">2.3.</span> <span class="nav-text">打开&#x2F;保存&#x2F;退出&#x2F;改变文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BF%BB%E9%A1%B5%E6%BB%9A%E5%8A%A8"><span class="nav-number">2.4.</span> <span class="nav-text">翻页滚动</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5"><span class="nav-number">3.</span> <span class="nav-text">第三阶段</span></a></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#firewalld%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">firewalld的基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEfirewalld-cmd"><span class="nav-number">2.</span> <span class="nav-text">配置firewalld-cmd</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.</span> <span class="nav-text">开启端口</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
-        <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Rumple"
-      src="/images/avatar.jpeg">
+        <div class="site-author site-overview-item animated" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Rumple" src="/images/avatar.jpeg">
   <p class="site-author-name" itemprop="name">Rumple</p>
   <div class="site-description" itemprop="description">后端 架构 容器</div>
 </div>
@@ -198,7 +195,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -211,14 +208,14 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
   <div class="links-of-author site-overview-item animated">
       <span class="links-of-author-item">
-        <a href="https://github.com/wuruipeng404" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wuruipeng404" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+        <a href="https://github.com/wuruipeng404" title="GitHub → https://github.com/wuruipeng404" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
         <a href="mailto:wrp357711589@163.com" title="E-Mail → mailto:wrp357711589@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
@@ -264,21 +261,21 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckg93gveo0006chosatz1ccwq/">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
       <meta itemprop="name" content="Rumple">
       <meta itemprop="description" content="后端 架构 容器">
     </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Rumplestiltskin's Home">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Vim常用命令
+          Firewalld防火墙操作手册
         </h1>
 
         <div class="post-meta-container">
@@ -290,14 +287,14 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-10-14 13:43:56 / 修改时间：15:50:20" itemprop="dateCreated datePublished" datetime="2020-10-14T13:43:56+08:00">2020-10-14</time>
+      <time title="创建时间：2020-10-14 16:30:18 / 修改时间：16:57:38" itemprop="dateCreated datePublished" datetime="2020-10-14T16:30:18+08:00">2020-10-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
           <a href="/categories/%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">操作指南</span></a>
         </span>
     </span>
@@ -319,58 +316,52 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>&#160;&#160;&#160;&#160;众所周知,vim是程序员的一款利器. 一些大神可以完全抛弃ide只使用vim去构建庞大的项目. 而对于我来说只是一个工具而已,他不应该耗费我的精力去做配置和学习.强行改变自己的编码习惯.所以这里整理了我日常使用比较多的一些命令.</p>
-<hr>
+        <h4 id="firewalld的基本使用"><a href="#firewalld的基本使用" class="headerlink" title="firewalld的基本使用"></a>firewalld的基本使用</h4><ul>
+<li>启动: <code>systemctl start firewalld</code></li>
+<li>关闭: <code>systemctl stop firewalld</code></li>
+<li>查看状态: <code>systemctl status firewalld</code></li>
+<li>开机禁用: <code>systemctl disable firewalld</code></li>
+<li>开机启用: <code>systemctl enable firewalld</code></li>
+</ul>
 <a id="more"></a>
-<h4 id="第一阶段"><a href="#第一阶段" class="headerlink" title="第一阶段"></a>第一阶段</h4><ul>
-<li><code>i</code> Insert模式</li>
-<li><code>x</code> 删当前光标所在的一个字符</li>
-<li><code>:wq</code> :w后面可以跟文件名表示新建一个文件,q表示退出</li>
-<li><code>dd</code> 删除当前行</li>
-<li><code>yy</code> 拷贝当前行</li>
-<li><code>p</code> 在光标后粘贴 P在之前粘贴</li>
-<li><code>:help &lt;command&gt;</code> 显示命令帮助信息</li>
+
+<ul>
+<li><p>启动一个服务：<code>systemctl start firewalld.service</code></p>
+</li>
+<li><p>关闭一个服务：<code>systemctl stop firewalld.service</code></p>
+</li>
+<li><p>重启一个服务：<code>systemctl restart firewalld.service</code></p>
+</li>
+<li><p>显示一个服务的状态：<code>systemctl status firewalld.service</code></p>
+</li>
+<li><p>在开机时启用一个服务：<code>systemctl enable firewalld.service</code></p>
+</li>
+<li><p>在开机时禁用一个服务：<code>systemctl disable firewalld.service</code></p>
+</li>
+<li><p>查看服务是否开机启动：<code>systemctl is-enabled firewalld.service</code></p>
+</li>
+<li><p>查看已启动的服务列表：<code>systemctl list-unit-files|grep enabled</code></p>
+</li>
+<li><p>查看启动失败的服务列表：<code>systemctl --failed</code></p>
+</li>
 </ul>
-<h4 id="第二阶段"><a href="#第二阶段" class="headerlink" title="第二阶段"></a>第二阶段</h4><h5 id="各种插入模式"><a href="#各种插入模式" class="headerlink" title="各种插入模式"></a>各种插入模式</h5><ul>
-<li><code>a</code> 在光标后插入</li>
-<li><code>o</code> 在当前行后插入一个新行</li>
-<li><code>O</code> 在当前行前插入一个新行</li>
+<h4 id="配置firewalld-cmd"><a href="#配置firewalld-cmd" class="headerlink" title="配置firewalld-cmd"></a>配置firewalld-cmd</h4><ul>
+<li>查看版本: <code>firewall-cmd --version</code></li>
+<li>查看帮助: <code>firewall-cmd --help</code></li>
+<li>显示状态: <code>firewall-cmd --state</code></li>
+<li>查看所有打开的端口: <code>firewall-cmd --zone=public --list-ports</code></li>
+<li>更新防火墙规则: <code>firewall-cmd --reload</code></li>
+<li>查看区域信息: <code>firewall-cmd --get-active-zones</code></li>
+<li>查看指定接口所属区域: <code>firewall-cmd --get-zone-of-interface=eth0</code></li>
+<li>拒绝所有包: <code>firewall-cmd --panic-on</code></li>
+<li>取消拒绝状态: <code>firewall-cmd --panic-off</code></li>
+<li>查看是否拒绝: <code>firewall-cmd --query-panic</code></li>
 </ul>
-<h5 id="简单移动光标"><a href="#简单移动光标" class="headerlink" title="简单移动光标"></a>简单移动光标</h5><ul>
-<li><code>0</code> 数字零，到行头</li>
-<li><code>$</code> 到本行行尾</li>
-<li><code>?pattern</code> 在前面的文本搜索 pattern</li>
-<li><code>/pattern</code> 在后面的文本搜索 pattern 的字符串,如果搜索出多个匹配，n向后查找,N向前查找</li>
-</ul>
-<h5 id="打开-保存-退出-改变文件"><a href="#打开-保存-退出-改变文件" class="headerlink" title="打开/保存/退出/改变文件"></a>打开/保存/退出/改变文件</h5><ul>
-<li><code>:e &lt;path/to/file&gt;</code> 打开一个文件</li>
-<li><code>:w</code> 存盘 后面跟文件名也可以另存</li>
-<li><code>:saveas &lt;path/to/file&gt;</code> 另存为 &lt;path/to/file&gt;</li>
-<li><code>:x</code> 或 <code>ZZ</code> 或 <code>:wq</code> 保存并退出 :x 表示仅在需要时保存</li>
-<li><code>:q!</code> 退出不保存 </li>
-<li><code>:qa!</code> 强行退出所有的正在编辑的文件，就算别的文件有更改。</li>
-<li><code>:bn</code> &amp;&amp; <code>:bp</code> 你可以同时打开很多文件，使用这两个命令来切换下一个或上一个文件</li>
-</ul>
-<h5 id="翻页滚动"><a href="#翻页滚动" class="headerlink" title="翻页滚动"></a>翻页滚动</h5><ul>
-<li><code>ctrl + f</code> 下翻一屏。</li>
-<li><code>ctrl + b</code> 上翻一屏。</li>
-<li><code>ctrl + d</code> 下翻半屏。</li>
-<li><code>ctrl + u</code> 上翻半屏。</li>
-<li><code>ctrl + e</code> 向下滚动一行。</li>
-<li><code>ctrl + y</code> 向上滚动一行。</li>
-</ul>
-<h4 id="第三阶段"><a href="#第三阶段" class="headerlink" title="第三阶段"></a>第三阶段</h4><ul>
-<li><code>.</code> 可以重复上一次的命令</li>
-<li><code>N &lt;command&gt;</code> 重复某个命令N次 例如：2dd 删除两行</li>
-<li><code>3G</code> 跳转到第三行,也可以使用 :3</li>
-<li><code>gg</code> 到第一行 相当于 1G 或者 :1</li>
-<li><code>G</code> 到最后一行</li>
-<li><code>w</code> 按单词移动，到下一个单词的开头</li>
-<li><code>e</code> 按单词移动，到下一个单词的结尾</li>
-<li><code>v</code> 进入可视化选择</li>
-<li><code>gU</code> 选中部分变为大写</li>
-<li><code>gu</code> 选中部分变为小写</li>
-<li><code>~</code> 反转光标所在位置大小写</li>
+<h4 id="开启端口"><a href="#开启端口" class="headerlink" title="开启端口"></a>开启端口</h4><ul>
+<li>添加: –permanent永久生效，没有此参数重启后失效<br>  <code>firewall-cmd --zone=public --add-port=80/tcp --permanent</code></li>
+<li>重新载入:<br>  <code>firewall-cmd --reload</code></li>
+<li>查看:<br>  <code>firewall-cmd --zone= public --query-port=80/tcp</code></li>
+<li>删除:<br>  <code>firewall-cmd --zone= public --remove-port=80/tcp --permanent</code></li>
 </ul>
 
     </div>
@@ -407,7 +398,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://wuruipeng404.github.io/ckg93gveo0006chosatz1ccwq/" title="Vim常用命令">https://wuruipeng404.github.io/ckg93gveo0006chosatz1ccwq/</a>
+      <a href="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/" title="Firewalld防火墙操作手册">https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -416,18 +407,21 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/vim/" rel="tag"><i class="fa fa-tag"></i> vim</a>
+              <a href="/tags/firewalld/" rel="tag"><i class="fa fa-tag"></i> firewalld</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/ckg93hi3d0009chosa6mq0mwc/" rel="prev" title="Hexo如何插入图片">
-                  <i class="fa fa-chevron-left"></i> Hexo如何插入图片
+                <a href="/ckg987iy20009uuosfc380006/" rel="prev" title="Vim常用命令">
+                  <i class="fa fa-chevron-left"></i> Vim常用命令
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/ckg987ixx0003uuos0pkfh09i/" rel="next" title="工欲善其事">
+                  工欲善其事 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -474,7 +468,7 @@
 
 <div class="copyright">
   
-  &copy; 2015 – 
+  © 2015 – 
   <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
@@ -499,7 +493,7 @@
       </span>
     </span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
     </div>
@@ -507,10 +501,45 @@
 
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
 
   
-  <script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script async="" src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/bundle.js"></script><script>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -518,38 +547,4 @@
       var s = document.getElementsByTagName("script")[0];
       s.parentNode.insertBefore(bp, s);
     })();
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-
-
-
-
-  
-
-  
-
-</body>
-</html>
+  </script></body></html>
