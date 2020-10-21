@@ -20,22 +20,21 @@
     var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","scheme":"Mist","version":"8.0.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 
-  <meta name="description" content="&amp;#160;&amp;#160;&amp;#160;&amp;#160;众所周知，通过Dockerfile去构建镜像是分层执行的，如何使我们的镜像最小化，以及不会泄露源代码等，我总结一个比较通用的Dockerfile.">
+  <meta name="description" content="firewalld的基本使用 启动: systemctl start firewalld 关闭: systemctl stop firewalld 查看状态: systemctl status firewalld 开机禁用: systemctl disable firewalld 开机启用: systemctl enable firewalld">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Golang程序Dockerfile最佳实践">
-<meta property="og:url" content="https://wuruipeng404.github.io/ckgc15mz00000paosdpfwe2tj/index.html">
+<meta property="og:title" content="Firewalld防火墙操作手册">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckgj2vtru000j5vosaruf7xud/index.html">
 <meta property="og:site_name" content="Rumplestiltskin's Home">
-<meta property="og:description" content="&amp;#160;&amp;#160;&amp;#160;&amp;#160;众所周知，通过Dockerfile去构建镜像是分层执行的，如何使我们的镜像最小化，以及不会泄露源代码等，我总结一个比较通用的Dockerfile.">
+<meta property="og:description" content="firewalld的基本使用 启动: systemctl start firewalld 关闭: systemctl stop firewalld 查看状态: systemctl status firewalld 开机禁用: systemctl disable firewalld 开机启用: systemctl enable firewalld">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-10-16T08:51:49.000Z">
-<meta property="article:modified_time" content="2020-10-16T09:13:05.005Z">
+<meta property="article:published_time" content="2020-10-14T08:30:18.000Z">
+<meta property="article:modified_time" content="2020-10-21T06:51:48.154Z">
 <meta property="article:author" content="Rumple">
-<meta property="article:tag" content="go">
-<meta property="article:tag" content="docker">
+<meta property="article:tag" content="firewalld">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://wuruipeng404.github.io/ckgc15mz00000paosdpfwe2tj/">
+<link rel="canonical" href="https://wuruipeng404.github.io/ckgj2vtru000j5vosaruf7xud/">
 
 
 <script class="page-configurations">
@@ -48,7 +47,7 @@
   };
 </script>
 
-  <title>Golang程序Dockerfile最佳实践 | Rumplestiltskin's Home</title>
+  <title>Firewalld防火墙操作手册 | Rumplestiltskin's Home</title>
   
 
 
@@ -169,7 +168,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -181,6 +180,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#firewalld%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">firewalld的基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEfirewalld-cmd"><span class="nav-number">2.</span> <span class="nav-text">配置firewalld-cmd</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.</span> <span class="nav-text">开启端口</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -195,20 +195,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -260,7 +260,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckgc15mz00000paosdpfwe2tj/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckgj2vtru000j5vosaruf7xud/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -273,7 +273,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Golang程序Dockerfile最佳实践
+          Firewalld防火墙操作手册
         </h1>
 
         <div class="post-meta-container">
@@ -283,17 +283,23 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2020-10-16 16:51:49 / 修改时间：17:13:05" itemprop="dateCreated datePublished" datetime="2020-10-16T16:51:49+08:00">2020-10-16</time>
+      <time title="创建时间：2020-10-14 16:30:18" itemprop="dateCreated datePublished" datetime="2020-10-14T16:30:18+08:00">2020-10-14</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-10-21 14:51:48" itemprop="dateModified" datetime="2020-10-21T14:51:48+08:00">2020-10-21</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-          <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+          <a href="/categories/%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">操作指南</span></a>
         </span>
     </span>
 
@@ -314,44 +320,52 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;众所周知，通过Dockerfile去构建镜像是分层执行的，如何使我们的镜像最小化，以及不会泄露源代码等，我总结一个比较通用的Dockerfile.</p>
+        <h4 id="firewalld的基本使用"><a href="#firewalld的基本使用" class="headerlink" title="firewalld的基本使用"></a>firewalld的基本使用</h4><ul>
+<li>启动: <code>systemctl start firewalld</code></li>
+<li>关闭: <code>systemctl stop firewalld</code></li>
+<li>查看状态: <code>systemctl status firewalld</code></li>
+<li>开机禁用: <code>systemctl disable firewalld</code></li>
+<li>开机启用: <code>systemctl enable firewalld</code></li>
+</ul>
 <a id="more"></a>
 
-<pre class="line-numbers language-Dockerfile" data-language="Dockerfile"><code class="language-Dockerfile">FROM golang:latest as builder
-
-WORKDIR  /home/works/program
-
-ADD .. .
-ARG GOPROXY=https://goproxy.cn
-RUN go build -o bin/main src/main.go
-
-FROM alpine:latest
-
-RUN echo "http://mirrors.aliyun.com/alpine/latest-stable/main/" &gt; /etc/apk/repositories \
-    &amp;&amp; rm -rf /var/cache/apk/* \
-    &amp;&amp; rm -rf /tmp/* \
-    &amp;&amp; apk update \
-    &amp;&amp; apk add --no-cache -U tzdata ca-certificates libc6-compat libgcc libstdc++ \
-    &amp;&amp; cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    &amp;&amp; echo "Asia/Shanghai" &gt; /etc/timezone \
-    &amp;&amp; apk del tzdata
-
-WORKDIR  /home/works/program
-
-EXPOSE 8000
-
-COPY --from=builder /home/works/program/bin/ ./
-COPY ./configs/settings.yml ./configs/settings.yml
-
-CMD ./main<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>说明：</p>
 <ul>
-<li>我们使用镜像golang:latest去编译，而实际运行的镜像则是从上层编译环境中copy过来而生产，这样做的好处是，运行的镜像只有编译后的二进制文件，没有各种依赖库，而且源代码也不在其中。是最小的状态。</li>
-<li>Dockerfile中<code>RUN</code>一次执行了多条命令，如果我们把多条命令分为多条RUN，那镜像的层数就会大大增加。体积也会变大</li>
-<li>注意 <code>.dockerignore</code> 文件的使用，将不必要的文件及目录写入其中，这样会大大减少docker build过程中 daemon context的大小。</li>
-<li>我喜欢用 <code>CMD</code> 而不是 <code>ENTRYPOINT</code> 的原因是因为，一旦你的程序有问题跑步起来，你想 <code>docker exec</code> 进入容器内部debug时，使用 <code>ENTRYPOINT</code> 是进不去的，而实际使用效果来说两者差别不大。</li>
-<li>不过上述Dockerfile还有个问题就是 每次build都需要重新下载依赖库，公司开了外网，网速快，当然没什么压力，如果没有，还有随着项目越来越大依赖越来越多，构建都是很慢的。  解决办法有两个，1.自己维护一个基础编译镜像，安装好所有的依赖包，这个就是增添了维护的烦恼。2.直接在自己的电脑上交叉编译，将二进制文件直接添加进容器，直接去除实时编译，这种会快不少。</li>
+<li><p>启动一个服务：<code>systemctl start firewalld.service</code></p>
+</li>
+<li><p>关闭一个服务：<code>systemctl stop firewalld.service</code></p>
+</li>
+<li><p>重启一个服务：<code>systemctl restart firewalld.service</code></p>
+</li>
+<li><p>显示一个服务的状态：<code>systemctl status firewalld.service</code></p>
+</li>
+<li><p>在开机时启用一个服务：<code>systemctl enable firewalld.service</code></p>
+</li>
+<li><p>在开机时禁用一个服务：<code>systemctl disable firewalld.service</code></p>
+</li>
+<li><p>查看服务是否开机启动：<code>systemctl is-enabled firewalld.service</code></p>
+</li>
+<li><p>查看已启动的服务列表：<code>systemctl list-unit-files|grep enabled</code></p>
+</li>
+<li><p>查看启动失败的服务列表：<code>systemctl --failed</code></p>
+</li>
+</ul>
+<h4 id="配置firewalld-cmd"><a href="#配置firewalld-cmd" class="headerlink" title="配置firewalld-cmd"></a>配置firewalld-cmd</h4><ul>
+<li>查看版本: <code>firewall-cmd --version</code></li>
+<li>查看帮助: <code>firewall-cmd --help</code></li>
+<li>显示状态: <code>firewall-cmd --state</code></li>
+<li>查看所有打开的端口: <code>firewall-cmd --zone=public --list-ports</code></li>
+<li>更新防火墙规则: <code>firewall-cmd --reload</code></li>
+<li>查看区域信息: <code>firewall-cmd --get-active-zones</code></li>
+<li>查看指定接口所属区域: <code>firewall-cmd --get-zone-of-interface=eth0</code></li>
+<li>拒绝所有包: <code>firewall-cmd --panic-on</code></li>
+<li>取消拒绝状态: <code>firewall-cmd --panic-off</code></li>
+<li>查看是否拒绝: <code>firewall-cmd --query-panic</code></li>
+</ul>
+<h4 id="开启端口"><a href="#开启端口" class="headerlink" title="开启端口"></a>开启端口</h4><ul>
+<li>添加: –permanent永久生效，没有此参数重启后失效<br>  <code>firewall-cmd --zone=public --add-port=80/tcp --permanent</code></li>
+<li>重新载入:<br>  <code>firewall-cmd --reload</code></li>
+<li>查看:<br>  <code>firewall-cmd --zone= public --query-port=80/tcp</code></li>
+<li>删除:<br>  <code>firewall-cmd --zone= public --remove-port=80/tcp --permanent</code></li>
 </ul>
 
     </div>
@@ -388,7 +402,7 @@ CMD ./main<span aria-hidden="true" class="line-numbers-rows"><span></span><span>
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://wuruipeng404.github.io/ckgc15mz00000paosdpfwe2tj/" title="Golang程序Dockerfile最佳实践">https://wuruipeng404.github.io/ckgc15mz00000paosdpfwe2tj/</a>
+      <a href="https://wuruipeng404.github.io/ckgj2vtru000j5vosaruf7xud/" title="Firewalld防火墙操作手册">https://wuruipeng404.github.io/ckgj2vtru000j5vosaruf7xud/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -397,21 +411,20 @@ CMD ./main<span aria-hidden="true" class="line-numbers-rows"><span></span><span>
 </div>
 
           <div class="post-tags">
-              <a href="/tags/go/" rel="tag"><i class="fa fa-tag"></i> go</a>
-              <a href="/tags/docker/" rel="tag"><i class="fa fa-tag"></i> docker</a>
+              <a href="/tags/firewalld/" rel="tag"><i class="fa fa-tag"></i> firewalld</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/ckgbzpx340000vhos0zdtf0mn/" rel="prev" title="Golang程序实现自动更新">
-                  <i class="fa fa-chevron-left"></i> Golang程序实现自动更新
+                <a href="/ckgj2vtrx000q5vosg98yfb5r/" rel="prev" title="Vim常用命令">
+                  <i class="fa fa-chevron-left"></i> Vim常用命令
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/ckghdhox300001oos00qga6zk/" rel="next" title="用简单的话讲明白MySQL索引">
-                  用简单的话讲明白MySQL索引 <i class="fa fa-chevron-right"></i>
+                <a href="/ckgj2vtrm00085vos3whdeeac/" rel="next" title="工欲善其事,必先利其器">
+                  工欲善其事,必先利其器 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -553,7 +566,7 @@ NexT.utils.loadComments('#gitalk-container', () => {
       repo        : 'hexo-comments',
       owner       : 'wuruipeng404',
       admin       : ['wuruipeng404'],
-      id          : 'ae8b09b5ecb2593296bcae4e4253993f',
+      id          : 'ca9a3643f03b947b4103af4dddb82c4e',
         language: 'zh-CN',
       distractionFreeMode: true
     });

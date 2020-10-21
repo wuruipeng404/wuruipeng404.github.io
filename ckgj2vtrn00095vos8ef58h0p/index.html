@@ -20,21 +20,22 @@
     var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","scheme":"Mist","version":"8.0.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 
-  <meta name="description" content="&amp;#160;&amp;#160;&amp;#160;&amp;#160;众所周知，vim是程序员的一款利器， 一些大神可以完全抛弃ide只使用vim去构建庞大的项目， 而对于我来说只是一个工具而已，他不应该耗费我的精力去做配置和学习，强行改变自己的编码习惯，所以这里整理了我日常使用比较多的一些命令。">
+  <meta name="description" content="&amp;#160;&amp;#160;&amp;#160;&amp;#160;众所周知，通过Dockerfile去构建镜像是分层执行的，如何使我们的镜像最小化，以及不会泄露源代码等，我总结一个比较通用的Dockerfile.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Vim常用命令">
-<meta property="og:url" content="https://wuruipeng404.github.io/ckg987iy20009uuosfc380006/index.html">
+<meta property="og:title" content="Golang程序Dockerfile最佳实践">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckgj2vtrn00095vos8ef58h0p/index.html">
 <meta property="og:site_name" content="Rumplestiltskin's Home">
-<meta property="og:description" content="&amp;#160;&amp;#160;&amp;#160;&amp;#160;众所周知，vim是程序员的一款利器， 一些大神可以完全抛弃ide只使用vim去构建庞大的项目， 而对于我来说只是一个工具而已，他不应该耗费我的精力去做配置和学习，强行改变自己的编码习惯，所以这里整理了我日常使用比较多的一些命令。">
+<meta property="og:description" content="&amp;#160;&amp;#160;&amp;#160;&amp;#160;众所周知，通过Dockerfile去构建镜像是分层执行的，如何使我们的镜像最小化，以及不会泄露源代码等，我总结一个比较通用的Dockerfile.">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-10-14T05:43:56.000Z">
-<meta property="article:modified_time" content="2020-10-14T09:01:10.859Z">
+<meta property="article:published_time" content="2020-10-16T08:51:49.000Z">
+<meta property="article:modified_time" content="2020-10-21T06:51:48.153Z">
 <meta property="article:author" content="Rumple">
-<meta property="article:tag" content="vim">
+<meta property="article:tag" content="go">
+<meta property="article:tag" content="docker">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://wuruipeng404.github.io/ckg987iy20009uuosfc380006/">
+<link rel="canonical" href="https://wuruipeng404.github.io/ckgj2vtrn00095vos8ef58h0p/">
 
 
 <script class="page-configurations">
@@ -47,7 +48,7 @@
   };
 </script>
 
-  <title>Vim常用命令 | Rumplestiltskin's Home</title>
+  <title>Golang程序Dockerfile最佳实践 | Rumplestiltskin's Home</title>
   
 
 
@@ -168,7 +169,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -180,7 +181,6 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5"><span class="nav-number">1.</span> <span class="nav-text">第一阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5"><span class="nav-number">2.</span> <span class="nav-text">第二阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%90%84%E7%A7%8D%E6%8F%92%E5%85%A5%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">各种插入模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%A7%BB%E5%8A%A8%E5%85%89%E6%A0%87"><span class="nav-number">2.2.</span> <span class="nav-text">简单移动光标</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%89%93%E5%BC%80-%E4%BF%9D%E5%AD%98-%E9%80%80%E5%87%BA-%E6%94%B9%E5%8F%98%E6%96%87%E4%BB%B6"><span class="nav-number">2.3.</span> <span class="nav-text">打开/保存/退出/改变文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BF%BB%E9%A1%B5%E6%BB%9A%E5%8A%A8"><span class="nav-number">2.4.</span> <span class="nav-text">翻页滚动</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5"><span class="nav-number">3.</span> <span class="nav-text">第三阶段</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -195,20 +195,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -260,7 +260,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckg987iy20009uuosfc380006/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckgj2vtrn00095vos8ef58h0p/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -273,7 +273,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Vim常用命令
+          Golang程序Dockerfile最佳实践
         </h1>
 
         <div class="post-meta-container">
@@ -283,17 +283,23 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2020-10-14 13:43:56 / 修改时间：17:01:10" itemprop="dateCreated datePublished" datetime="2020-10-14T13:43:56+08:00">2020-10-14</time>
+      <time title="创建时间：2020-10-16 16:51:49" itemprop="dateCreated datePublished" datetime="2020-10-16T16:51:49+08:00">2020-10-16</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-10-21 14:51:48" itemprop="dateModified" datetime="2020-10-21T14:51:48+08:00">2020-10-21</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">操作指南</span></a>
+          <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
         </span>
     </span>
 
@@ -314,58 +320,44 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;众所周知，vim是程序员的一款利器， 一些大神可以完全抛弃ide只使用vim去构建庞大的项目， 而对于我来说只是一个工具而已，他不应该耗费我的精力去做配置和学习，强行改变自己的编码习惯，所以这里整理了我日常使用比较多的一些命令。</p>
-<hr>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;众所周知，通过Dockerfile去构建镜像是分层执行的，如何使我们的镜像最小化，以及不会泄露源代码等，我总结一个比较通用的Dockerfile.</p>
 <a id="more"></a>
-<h4 id="第一阶段"><a href="#第一阶段" class="headerlink" title="第一阶段"></a>第一阶段</h4><ul>
-<li><code>i</code> Insert模式</li>
-<li><code>x</code> 删当前光标所在的一个字符</li>
-<li><code>:wq</code> :w后面可以跟文件名表示新建一个文件,q表示退出</li>
-<li><code>dd</code> 删除当前行</li>
-<li><code>yy</code> 拷贝当前行</li>
-<li><code>p</code> 在光标后粘贴 P在之前粘贴</li>
-<li><code>:help &lt;command&gt;</code> 显示命令帮助信息</li>
-</ul>
-<h4 id="第二阶段"><a href="#第二阶段" class="headerlink" title="第二阶段"></a>第二阶段</h4><h5 id="各种插入模式"><a href="#各种插入模式" class="headerlink" title="各种插入模式"></a>各种插入模式</h5><ul>
-<li><code>a</code> 在光标后插入</li>
-<li><code>o</code> 在当前行后插入一个新行</li>
-<li><code>O</code> 在当前行前插入一个新行</li>
-</ul>
-<h5 id="简单移动光标"><a href="#简单移动光标" class="headerlink" title="简单移动光标"></a>简单移动光标</h5><ul>
-<li><code>0</code> 数字零，到行头</li>
-<li><code>$</code> 到本行行尾</li>
-<li><code>?pattern</code> 在前面的文本搜索 pattern</li>
-<li><code>/pattern</code> 在后面的文本搜索 pattern 的字符串,如果搜索出多个匹配，n向后查找,N向前查找</li>
-</ul>
-<h5 id="打开-保存-退出-改变文件"><a href="#打开-保存-退出-改变文件" class="headerlink" title="打开/保存/退出/改变文件"></a>打开/保存/退出/改变文件</h5><ul>
-<li><code>:e &lt;path/to/file&gt;</code> 打开一个文件</li>
-<li><code>:w</code> 存盘 后面跟文件名也可以另存</li>
-<li><code>:saveas &lt;path/to/file&gt;</code> 另存为 &lt;path/to/file&gt;</li>
-<li><code>:x</code> 或 <code>ZZ</code> 或 <code>:wq</code> 保存并退出 :x 表示仅在需要时保存</li>
-<li><code>:q!</code> 退出不保存 </li>
-<li><code>:qa!</code> 强行退出所有的正在编辑的文件，就算别的文件有更改。</li>
-<li><code>:bn</code> &amp;&amp; <code>:bp</code> 你可以同时打开很多文件，使用这两个命令来切换下一个或上一个文件</li>
-</ul>
-<h5 id="翻页滚动"><a href="#翻页滚动" class="headerlink" title="翻页滚动"></a>翻页滚动</h5><ul>
-<li><code>ctrl + f</code> 下翻一屏。</li>
-<li><code>ctrl + b</code> 上翻一屏。</li>
-<li><code>ctrl + d</code> 下翻半屏。</li>
-<li><code>ctrl + u</code> 上翻半屏。</li>
-<li><code>ctrl + e</code> 向下滚动一行。</li>
-<li><code>ctrl + y</code> 向上滚动一行。</li>
-</ul>
-<h4 id="第三阶段"><a href="#第三阶段" class="headerlink" title="第三阶段"></a>第三阶段</h4><ul>
-<li><code>.</code> 可以重复上一次的命令</li>
-<li><code>N &lt;command&gt;</code> 重复某个命令N次 例如：2dd 删除两行</li>
-<li><code>3G</code> 跳转到第三行,也可以使用 :3</li>
-<li><code>gg</code> 到第一行 相当于 1G 或者 :1</li>
-<li><code>G</code> 到最后一行</li>
-<li><code>w</code> 按单词移动，到下一个单词的开头</li>
-<li><code>e</code> 按单词移动，到下一个单词的结尾</li>
-<li><code>v</code> 进入可视化选择</li>
-<li><code>gU</code> 选中部分变为大写</li>
-<li><code>gu</code> 选中部分变为小写</li>
-<li><code>~</code> 反转光标所在位置大小写</li>
+
+<pre class="line-numbers language-Dockerfile" data-language="Dockerfile"><code class="language-Dockerfile">FROM golang:latest as builder
+
+WORKDIR  /home/works/program
+
+ADD .. .
+ARG GOPROXY=https://goproxy.cn
+RUN go build -o bin/main src/main.go
+
+FROM alpine:latest
+
+RUN echo "http://mirrors.aliyun.com/alpine/latest-stable/main/" &gt; /etc/apk/repositories \
+    &amp;&amp; rm -rf /var/cache/apk/* \
+    &amp;&amp; rm -rf /tmp/* \
+    &amp;&amp; apk update \
+    &amp;&amp; apk add --no-cache -U tzdata ca-certificates libc6-compat libgcc libstdc++ \
+    &amp;&amp; cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    &amp;&amp; echo "Asia/Shanghai" &gt; /etc/timezone \
+    &amp;&amp; apk del tzdata
+
+WORKDIR  /home/works/program
+
+EXPOSE 8000
+
+COPY --from=builder /home/works/program/bin/ ./
+COPY ./configs/settings.yml ./configs/settings.yml
+
+CMD ./main<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>说明：</p>
+<ul>
+<li>我们使用镜像golang:latest去编译，而实际运行的镜像则是从上层编译环境中copy过来而生产，这样做的好处是，运行的镜像只有编译后的二进制文件，没有各种依赖库，而且源代码也不在其中。是最小的状态。</li>
+<li>Dockerfile中<code>RUN</code>一次执行了多条命令，如果我们把多条命令分为多条RUN，那镜像的层数就会大大增加。体积也会变大</li>
+<li>注意 <code>.dockerignore</code> 文件的使用，将不必要的文件及目录写入其中，这样会大大减少docker build过程中 daemon context的大小。</li>
+<li>我喜欢用 <code>CMD</code> 而不是 <code>ENTRYPOINT</code> 的原因是因为，一旦你的程序有问题跑步起来，你想 <code>docker exec</code> 进入容器内部debug时，使用 <code>ENTRYPOINT</code> 是进不去的，而实际使用效果来说两者差别不大。</li>
+<li>不过上述Dockerfile还有个问题就是 每次build都需要重新下载依赖库，公司开了外网，网速快，当然没什么压力，如果没有，还有随着项目越来越大依赖越来越多，构建都是很慢的。  解决办法有两个，1.自己维护一个基础编译镜像，安装好所有的依赖包，这个就是增添了维护的烦恼。2.直接在自己的电脑上交叉编译，将二进制文件直接添加进容器，直接去除实时编译，这种会快不少。</li>
 </ul>
 
     </div>
@@ -402,7 +394,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://wuruipeng404.github.io/ckg987iy20009uuosfc380006/" title="Vim常用命令">https://wuruipeng404.github.io/ckg987iy20009uuosfc380006/</a>
+      <a href="https://wuruipeng404.github.io/ckgj2vtrn00095vos8ef58h0p/" title="Golang程序Dockerfile最佳实践">https://wuruipeng404.github.io/ckgj2vtrn00095vos8ef58h0p/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -411,20 +403,21 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/vim/" rel="tag"><i class="fa fa-tag"></i> vim</a>
+              <a href="/tags/go/" rel="tag"><i class="fa fa-tag"></i> go</a>
+              <a href="/tags/docker/" rel="tag"><i class="fa fa-tag"></i> docker</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/ckg987ixu0001uuos6vqxdd1s/" rel="prev" title="Hexo如何插入图片">
-                  <i class="fa fa-chevron-left"></i> Hexo如何插入图片
+                <a href="/ckgj2vtrt000h5vosbfpfhke2/" rel="prev" title="Golang程序实现自动更新">
+                  <i class="fa fa-chevron-left"></i> Golang程序实现自动更新
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/ckg987iy00007uuos0md371jd/" rel="next" title="Firewalld防火墙操作手册">
-                  Firewalld防火墙操作手册 <i class="fa fa-chevron-right"></i>
+                <a href="/ckgj2vtrz000u5vos0ydb0k25/" rel="next" title="用简单的话讲明白MySQL索引">
+                  用简单的话讲明白MySQL索引 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -566,7 +559,7 @@ NexT.utils.loadComments('#gitalk-container', () => {
       repo        : 'hexo-comments',
       owner       : 'wuruipeng404',
       admin       : ['wuruipeng404'],
-      id          : '70bb1db159d2d13a228e12ff2c7d84cf',
+      id          : 'a9f55dba162b5e3478062af15de391c9',
         language: 'zh-CN',
       distractionFreeMode: true
     });

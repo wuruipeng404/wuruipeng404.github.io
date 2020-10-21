@@ -20,21 +20,22 @@
     var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","scheme":"Mist","version":"8.0.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 
-  <meta name="description" content="firewalld的基本使用 启动: systemctl start firewalld 关闭: systemctl stop firewalld 查看状态: systemctl status firewalld 开机禁用: systemctl disable firewalld 开机启用: systemctl enable firewalld">
+  <meta name="description" content="centos8 已经出来一段时间了，在刚出来的时候，尝试过使用一次，貌似相较7变化有些大，就没继续折腾现在有时间了，来尝试一下把K8S的环境搭建在centos8上。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Firewalld防火墙操作手册">
-<meta property="og:url" content="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/index.html">
+<meta property="og:title" content="折腾之在CentOS8上安装K8s环境">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckgj2vtr300015voscvj1boh5/index.html">
 <meta property="og:site_name" content="Rumplestiltskin's Home">
-<meta property="og:description" content="firewalld的基本使用 启动: systemctl start firewalld 关闭: systemctl stop firewalld 查看状态: systemctl status firewalld 开机禁用: systemctl disable firewalld 开机启用: systemctl enable firewalld">
+<meta property="og:description" content="centos8 已经出来一段时间了，在刚出来的时候，尝试过使用一次，貌似相较7变化有些大，就没继续折腾现在有时间了，来尝试一下把K8S的环境搭建在centos8上。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-10-14T08:30:18.000Z">
-<meta property="article:modified_time" content="2020-10-14T08:57:38.371Z">
+<meta property="article:published_time" content="2020-10-21T05:29:21.000Z">
+<meta property="article:modified_time" content="2020-10-21T09:01:05.595Z">
 <meta property="article:author" content="Rumple">
-<meta property="article:tag" content="firewalld">
+<meta property="article:tag" content="centos8">
+<meta property="article:tag" content="k8s">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/">
+<link rel="canonical" href="https://wuruipeng404.github.io/ckgj2vtr300015voscvj1boh5/">
 
 
 <script class="page-configurations">
@@ -47,7 +48,7 @@
   };
 </script>
 
-  <title>Firewalld防火墙操作手册 | Rumplestiltskin's Home</title>
+  <title>折腾之在CentOS8上安装K8s环境 | Rumplestiltskin's Home</title>
   
 
 
@@ -180,7 +181,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#firewalld%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">firewalld的基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEfirewalld-cmd"><span class="nav-number">2.</span> <span class="nav-text">配置firewalld-cmd</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.</span> <span class="nav-text">开启端口</span></a></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">虚拟机</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#IP"><span class="nav-number">2.</span> <span class="nav-text">IP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9yum%E6%BA%90%E4%B8%BA%E6%B8%85%E5%8D%8E%E6%BA%90"><span class="nav-number">3.</span> <span class="nav-text">修改yum源为清华源</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%B8%80%E4%BA%9B%E5%B7%A5%E5%85%B7"><span class="nav-number">4.</span> <span class="nav-text">安装一些工具</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Docker"><span class="nav-number">5.</span> <span class="nav-text">安装Docker</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%89%E8%A3%85K8S"><span class="nav-number">6.</span> <span class="nav-text">安装K8S</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -195,20 +196,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -260,7 +261,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckgj2vtr300015voscvj1boh5/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -273,7 +274,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Firewalld防火墙操作手册
+          折腾之在CentOS8上安装K8s环境
         </h1>
 
         <div class="post-meta-container">
@@ -285,7 +286,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-10-14 16:30:18 / 修改时间：16:57:38" itemprop="dateCreated datePublished" datetime="2020-10-14T16:30:18+08:00">2020-10-14</time>
+      <time title="创建时间：2020-10-21 13:29:21 / 修改时间：17:01:05" itemprop="dateCreated datePublished" datetime="2020-10-21T13:29:21+08:00">2020-10-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -293,7 +294,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">操作指南</span></a>
+          <a href="/categories/centos/" itemprop="url" rel="index"><span itemprop="name">centos</span></a>
         </span>
     </span>
 
@@ -314,53 +315,119 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h4 id="firewalld的基本使用"><a href="#firewalld的基本使用" class="headerlink" title="firewalld的基本使用"></a>firewalld的基本使用</h4><ul>
-<li>启动: <code>systemctl start firewalld</code></li>
-<li>关闭: <code>systemctl stop firewalld</code></li>
-<li>查看状态: <code>systemctl status firewalld</code></li>
-<li>开机禁用: <code>systemctl disable firewalld</code></li>
-<li>开机启用: <code>systemctl enable firewalld</code></li>
-</ul>
+        <p>centos8 已经出来一段时间了，在刚出来的时候，尝试过使用一次，貌似相较7变化有些大，就没继续折腾<br>现在有时间了，来尝试一下把K8S的环境搭建在centos8上。</p>
 <a id="more"></a>
 
+<ol>
+<li><h5 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h5><p>我用的是Parallels Desktop,装的centos8虚拟机，用的镜像目前版本是 <code>CentOS-8.2.2004-x86_64-minimal.iso</code></p>
+</li>
+<li><h5 id="IP"><a href="#IP" class="headerlink" title="IP"></a>IP</h5><p>跟之前不一样的是，8装好<code>ifconfig</code>是没有ip的，这就需要我们手动配置一下了。</p>
+<ol>
+<li>查看 <code>/etc/sysconfig/network-scripts/</code>目录下并没有eth0网卡，不过有一个<code>ifcfg-xxx</code>，这里应该每个人是不一样的，不过不管他是什么我们都给改为，<code>ifcfg-eth0</code>.</li>
+<li>同时还要修改<code>ifcfg-eth0</code>内的几个配置项 <code>NAME</code>和<code>DEVICE</code> 改为 eth0, <code>ONBOOT</code> 改为 yes.</li>
+<li>编辑<code>/etc/default/grub</code> 在 <code>GRUBCMDLINELINUX</code>变量 的 <code>crashkernel=auto</code> 后面加上 <code>net.ifnames=0 biosdevname=0</code></li>
+<li>运行命令<code>grub2-mkconfig -o /boot/grub2/grub.cfg</code>来重新生成GRUB配置并更新内核参数.</li>
+<li>最后重启，然后就可以看到ip啦，就可以直接ssh进行操作了。</li>
+<li>PS：centos8 已经没有newwork.service这个服务了，如果要单纯重启网络可以执行 <code>nmcli c reload</code>。</li>
+</ol>
+</li>
+<li><h5 id="修改yum源为清华源"><a href="#修改yum源为清华源" class="headerlink" title="修改yum源为清华源"></a>修改yum源为清华源</h5><ol>
+<li>首先备份 <code>sudo cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak</code></li>
+<li>然后编辑 <code>/etc/yum.repos.d/CentOS-Base.repo</code><ol>
+<li>注释 <code>mirrorlist=</code> 这一行</li>
+<li>取消注释 <code>baseurl=</code> 这一行，并将 <code>mirror.centos.org</code> 替换为 <code>mirrors.tuna.tsinghua.edu.cn</code></li>
+</ol>
+</li>
+<li>最后 执行 <code>sudo yum makecache &amp;&amp; sudo yum -y update</code> </li>
+</ol>
+</li>
+<li><h5 id="安装一些工具"><a href="#安装一些工具" class="headerlink" title="安装一些工具"></a>安装一些工具</h5> <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yum -y <span class="token function">install</span> python3 <span class="token function">vim</span> <span class="token function">git</span> <span class="token function">wget</span> telnet* the_silver_searcher
+pip3 <span class="token function">install</span> mycli ipython httpie<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <ul>
-<li><p>启动一个服务：<code>systemctl start firewalld.service</code></p>
-</li>
-<li><p>关闭一个服务：<code>systemctl stop firewalld.service</code></p>
-</li>
-<li><p>重启一个服务：<code>systemctl restart firewalld.service</code></p>
-</li>
-<li><p>显示一个服务的状态：<code>systemctl status firewalld.service</code></p>
-</li>
-<li><p>在开机时启用一个服务：<code>systemctl enable firewalld.service</code></p>
-</li>
-<li><p>在开机时禁用一个服务：<code>systemctl disable firewalld.service</code></p>
-</li>
-<li><p>查看服务是否开机启动：<code>systemctl is-enabled firewalld.service</code></p>
-</li>
-<li><p>查看已启动的服务列表：<code>systemctl list-unit-files|grep enabled</code></p>
-</li>
-<li><p>查看启动失败的服务列表：<code>systemctl --failed</code></p>
+<li>htop<br>原来htop安装 直接<code>yum -y install 就可以的</code>，现在需要用<code>dnf</code><ol>
+<li><code>dnf install https://dl.Fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm</code></li>
+<li><code>dnf update</code></li>
+<li><code>dnf install htop</code></li>
+</ol>
 </li>
 </ul>
-<h4 id="配置firewalld-cmd"><a href="#配置firewalld-cmd" class="headerlink" title="配置firewalld-cmd"></a>配置firewalld-cmd</h4><ul>
-<li>查看版本: <code>firewall-cmd --version</code></li>
-<li>查看帮助: <code>firewall-cmd --help</code></li>
-<li>显示状态: <code>firewall-cmd --state</code></li>
-<li>查看所有打开的端口: <code>firewall-cmd --zone=public --list-ports</code></li>
-<li>更新防火墙规则: <code>firewall-cmd --reload</code></li>
-<li>查看区域信息: <code>firewall-cmd --get-active-zones</code></li>
-<li>查看指定接口所属区域: <code>firewall-cmd --get-zone-of-interface=eth0</code></li>
-<li>拒绝所有包: <code>firewall-cmd --panic-on</code></li>
-<li>取消拒绝状态: <code>firewall-cmd --panic-off</code></li>
-<li>查看是否拒绝: <code>firewall-cmd --query-panic</code></li>
-</ul>
-<h4 id="开启端口"><a href="#开启端口" class="headerlink" title="开启端口"></a>开启端口</h4><ul>
-<li>添加: –permanent永久生效，没有此参数重启后失效<br>  <code>firewall-cmd --zone=public --add-port=80/tcp --permanent</code></li>
-<li>重新载入:<br>  <code>firewall-cmd --reload</code></li>
-<li>查看:<br>  <code>firewall-cmd --zone= public --query-port=80/tcp</code></li>
-<li>删除:<br>  <code>firewall-cmd --zone= public --remove-port=80/tcp --permanent</code></li>
-</ul>
+</li>
+<li><h5 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h5><ol>
+<li>安装依赖 <code>sudo yum install -y yum-utils device-mapper-persistent-data lvm2</code></li>
+<li>配置阿里云仓库 <code>sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</code></li>
+<li>由于centos8默认使用podman，所以我们要先手动安装containerd.io，同时如果你的源下载的版本太低，可以手动下载新版本 <a target="_blank" rel="noopener" href="https://download.docker.com/linux/fedora/30/x86_64/stable/Packages/">Download</a> 进行安装</li>
+<li>yum -y install docker-ce</li>
+<li>修改docker配置文件，镜像源加速  <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOF<span class="token bash punctuation"> <span class="token operator">&gt;</span> /etc/docker/daemon.json</span>
+{
+    "registry-mirrors": ["https://registry.docker-cn.com","http://hub-mirror.c.163.com"],
+}
+EOF</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li><code>systemctl start docker</code> </li>
+</ol>
+</li>
+<li><h5 id="安装K8S"><a href="#安装K8S" class="headerlink" title="安装K8S"></a>安装K8S</h5><ol>
+<li><p>关闭防火墙</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">systemctl disable firewalld
+systemctl stop firewalld<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></li>
+<li><p>禁用SELinux</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">setenforce <span class="token number">0</span>
+<span class="token comment"># 或者</span>
+<span class="token function">vim</span> /etc/sysconfig/selinux
+<span class="token assign-left variable">SELINUX</span><span class="token operator">=</span>disabled
+<span class="token function">reboot</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>安装kubeadm(用于安装k8s集群的工具)</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 修改源</span>
+<span class="token function">vim</span> /etc/yum.repos.d/kubernetes.repo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-conf" data-language="conf"><code class="language-conf">[kubernetes]
+name=Kubernetes Repository
+baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+enabled=1
+gpgcheck=0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">yum -y <span class="token function">install</span> kubelet kubeadm kubectl --disableexcludes<span class="token operator">=</span>kubernetes<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">systemctl <span class="token builtin class-name">enable</span> docker <span class="token operator">&amp;&amp;</span> systemctl start docker
+systemctl <span class="token builtin class-name">enable</span> kubelet <span class="token operator">&amp;&amp;</span> systemctl start kubelet<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</li>
+<li><p>kubeadm config</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 初始化配置文件备用</span>
+kubeadm config print init-defaults <span class="token operator">&gt;</span> init.defaults.yaml
+<span class="token comment"># 拷贝一份</span>
+<span class="token function">cp</span> init.defaults.yaml init.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>修改 init.yaml 中的如下项</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">localAPIEndpoint</span><span class="token punctuation">:</span>
+  <span class="token key atrule">advertiseAddress</span><span class="token punctuation">:</span> 你的ip
+
+<span class="token key atrule">imageRepository</span><span class="token punctuation">:</span> docker.io/aiotceo <span class="token comment"># 镜像仓库地址</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>下载相关镜像</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">kubeadm config images pull --config<span class="token operator">=</span>init.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>Master节点</p>
+<ol>
+<li><p>关闭swap,修改<code>/etc/sysconfig/kubelet</code>的配置项<code>KUBELET_EXTRA_ARGS=--fail-swap-on=false</code></p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">swapoff -a
+<span class="token function">vim</span> /etc/fstab
+<span class="token comment"># 注释掉swap的自动挂载</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
+<li><p>安装</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 这个过程需要一些时间</span>
+kubeadm init --config<span class="token operator">=</span>init-config.yaml
+<span class="token comment"># 可能会遇到一些错误需要reset kubelet服务</span>
+
+<span class="token comment"># 修改权限</span>
+<span class="token function">mkdir</span> -p <span class="token environment constant">$HOME</span>/.kube
+<span class="token function">sudo</span> <span class="token function">cp</span> -i /etc/kubernetes/admin.conf <span class="token environment constant">$HOME</span>/.kube/config
+<span class="token function">sudo</span> <span class="token function">chown</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">id</span> -u<span class="token variable">)</span></span><span class="token builtin class-name">:</span><span class="token variable"><span class="token variable">$(</span><span class="token function">id</span> -g<span class="token variable">)</span></span> <span class="token environment constant">$HOME</span>/.kube/config<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注意记录安装成功后的信息 kubeadm join xxxxxxxx</p>
+</li>
+</ol>
+</li>
+<li><p>Node节点<br>前面的准备工作都是一样的 只需要在最后生成配置文件后执行<br><code>kubeadm join --config=join-config.yaml</code></p>
+</li>
+<li><p>如果你只想安装单节点的话</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl taint nodes --all node-role.kubernetes.io/master-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+</ol>
+</li>
+</ol>
 
     </div>
 
@@ -396,7 +463,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/" title="Firewalld防火墙操作手册">https://wuruipeng404.github.io/ckg987iy00007uuos0md371jd/</a>
+      <a href="https://wuruipeng404.github.io/ckgj2vtr300015voscvj1boh5/" title="折腾之在CentOS8上安装K8s环境">https://wuruipeng404.github.io/ckgj2vtr300015voscvj1boh5/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -405,21 +472,19 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/firewalld/" rel="tag"><i class="fa fa-tag"></i> firewalld</a>
+              <a href="/tags/centos8/" rel="tag"><i class="fa fa-tag"></i> centos8</a>
+              <a href="/tags/k8s/" rel="tag"><i class="fa fa-tag"></i> k8s</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/ckg987iy20009uuosfc380006/" rel="prev" title="Vim常用命令">
-                  <i class="fa fa-chevron-left"></i> Vim常用命令
+                <a href="/ckgj2vtrf00075vos00oi3ixq/" rel="prev" title="hexo添加评论系统">
+                  <i class="fa fa-chevron-left"></i> hexo添加评论系统
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/ckg987ixx0003uuos0pkfh09i/" rel="next" title="工欲善其事,必先利其器">
-                  工欲善其事,必先利其器 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -560,7 +625,7 @@ NexT.utils.loadComments('#gitalk-container', () => {
       repo        : 'hexo-comments',
       owner       : 'wuruipeng404',
       admin       : ['wuruipeng404'],
-      id          : '8e9fc91aea63056c041e2a0c51d1b6e8',
+      id          : '4ba3666ec5586d07ee6f5ccc55b3dc7a',
         language: 'zh-CN',
       distractionFreeMode: true
     });
