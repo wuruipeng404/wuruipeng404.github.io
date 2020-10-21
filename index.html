@@ -192,14 +192,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -248,6 +248,103 @@
       
 
       
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckgirb79e0000rdosfnyeg6tt/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Rumple">
+      <meta itemprop="description" content="后端 架构 容器">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rumplestiltskin's Home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/ckgirb79e0000rdosfnyeg6tt/" class="post-title-link" itemprop="url">hexo添加评论系统</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-10-21 09:54:15 / 修改时间：10:08:28" itemprop="dateCreated datePublished" datetime="2020-10-21T09:54:15+08:00">2020-10-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+          <a href="/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <ol>
+<li>hexo支持很多评论系统，由于我的blog是部署在github page 上，所以，索性我就直接用gitalk用做评论系统</li>
+<li>配置方法<ol>
+<li>首先先在github中创建一个用于存储评论的公有仓库，注意（博客可以部署在私有仓库，评论必须public）</li>
+<li>注册Github APP <a target="_blank" rel="noopener" href="https://github.com/settings/applications/new">https://github.com/settings/applications/new</a><ul>
+<li>Homepage URL 与 Authorization callback URL 都填写你的blog地址</li>
+<li>其余随意填写</li>
+</ul>
+<ol start="3">
+<li>注册完毕我们会得到 ClientID 和Client Secret</li>
+<li>在next主题配置文件中 找到如图的配置项<br><img src="/ckgirb79e0000rdosfnyeg6tt/gitalk.png" alt="gitalk"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">gitalk</span><span class="token punctuation">:</span>
+  <span class="token key atrule">enable</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token comment"># 开启</span>
+  <span class="token key atrule">github_id</span><span class="token punctuation">:</span> 你的账户
+  <span class="token key atrule">repo</span><span class="token punctuation">:</span> 刚刚创建的评论仓库
+  <span class="token key atrule">client_id</span><span class="token punctuation">:</span> ClientID
+  <span class="token key atrule">client_secret</span><span class="token punctuation">:</span> Client Secret
+  <span class="token key atrule">admin_user</span><span class="token punctuation">:</span> 你的账户<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>配置好后重新部署即可</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
     
 
 
@@ -970,7 +1067,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-10-16 18:00:47" itemprop="dateModified" datetime="2020-10-16T18:00:47+08:00">2020-10-16</time>
+        <time title="修改时间：2020-10-21 09:54:53" itemprop="dateModified" datetime="2020-10-21T09:54:53+08:00">2020-10-21</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -978,7 +1075,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/" itemprop="url" rel="index"><span itemprop="name">工具配置</span></a>
+          <a href="/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a>
         </span>
     </span>
 
@@ -1023,96 +1120,11 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckg987iy10008uuos98zmglbb/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Rumple">
-      <meta itemprop="description" content="后端 架构 容器">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Rumplestiltskin's Home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/ckg987iy10008uuos98zmglbb/" class="post-title-link" itemprop="url">Git命令概览</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-10-13 11:22:28" itemprop="dateCreated datePublished" datetime="2020-10-13T11:22:28+08:00">2020-10-13</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-10-14 15:50:10" itemprop="dateModified" datetime="2020-10-14T15:50:10+08:00">2020-10-14</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">操作指南</span></a>
-        </span>
-    </span>
 
   
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><img src="/ckg987iy10008uuos98zmglbb/git_all.png" alt="git_all"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/ckg987iy10008uuos98zmglbb/#more" rel="contents">
-                阅读全文 »
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-
-  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
