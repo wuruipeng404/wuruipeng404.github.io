@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.0/css/all.min.css');loadCss('//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.0/css/all.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css"></noscript></head>
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.0/css/all.min.css');loadCss('//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css');loadCss('//cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.0/css/all.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.css"></noscript></head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
@@ -507,6 +507,7 @@
 
 
       
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -612,6 +613,10 @@
 
 
 
+
+
+
+
 <script src="/bundle.js"></script><script>
     (function(){
       var bp = document.createElement('script');
@@ -620,4 +625,21 @@
       var s = document.getElementsByTagName("script")[0];
       s.parentNode.insertBefore(bp, s);
     })();
-  </script></body></html>
+  ;
+
+NexT.utils.loadComments('#gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'f69af37424dec003dd80',
+      clientSecret: 'cf2dd6f7c02d71b7529a35bad785e0f6c403d9a7',
+      repo        : 'hexo-comments',
+      owner       : 'wuruipeng404',
+      admin       : ['wuruipeng404'],
+      id          : '5ae7162597f6644228c43361bd6b97e6',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script></body></html>
