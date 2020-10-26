@@ -20,21 +20,21 @@
     var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","scheme":"Mist","version":"8.0.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 
-  <meta name="description" content="享元模式是指：从对象中剥离出不发生改变且多个实例都需要的重复数据（当然这个数据也可以是对象），独立出一个享元，从而减少对象的创建，节省内存">
+  <meta name="description" content="观察者模式比较好理解，其实和发布订阅差不多。举一个学生订阅课程的例子">
 <meta property="og:type" content="article">
-<meta property="og:title" content="理解设计模式之享元模式">
-<meta property="og:url" content="https://wuruipeng404.github.io/ckgq6e87u0000bros2675bddv/index.html">
+<meta property="og:title" content="理解设计模式之观察者模式">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckgqdrmra0003abosfny2enuk/index.html">
 <meta property="og:site_name" content="Rumplestiltskin's Home">
-<meta property="og:description" content="享元模式是指：从对象中剥离出不发生改变且多个实例都需要的重复数据（当然这个数据也可以是对象），独立出一个享元，从而减少对象的创建，节省内存">
+<meta property="og:description" content="观察者模式比较好理解，其实和发布订阅差不多。举一个学生订阅课程的例子">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-10-26T06:22:51.000Z">
-<meta property="article:modified_time" content="2020-10-26T06:25:17.340Z">
+<meta property="article:published_time" content="2020-10-26T09:55:25.000Z">
+<meta property="article:modified_time" content="2020-10-26T09:56:23.643Z">
 <meta property="article:author" content="Rumple">
-<meta property="article:tag" content="结构型设计模式">
+<meta property="article:tag" content="行为型设计模式">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://wuruipeng404.github.io/ckgq6e87u0000bros2675bddv/">
+<link rel="canonical" href="https://wuruipeng404.github.io/ckgqdrmra0003abosfny2enuk/">
 
 
 <script class="page-configurations">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>理解设计模式之享元模式 | Rumplestiltskin's Home</title>
+  <title>理解设计模式之观察者模式 | Rumplestiltskin's Home</title>
   
 
 
@@ -259,7 +259,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckgq6e87u0000bros2675bddv/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckgqdrmra0003abosfny2enuk/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -272,7 +272,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          理解设计模式之享元模式
+          理解设计模式之观察者模式
         </h1>
 
         <div class="post-meta-container">
@@ -284,7 +284,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-10-26 14:22:51 / 修改时间：14:25:17" itemprop="dateCreated datePublished" datetime="2020-10-26T14:22:51+08:00">2020-10-26</time>
+      <time title="创建时间：2020-10-26 17:55:25 / 修改时间：17:56:23" itemprop="dateCreated datePublished" datetime="2020-10-26T17:55:25+08:00">2020-10-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -313,68 +313,69 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>享元模式是指：从对象中剥离出不发生改变且多个实例都需要的重复数据（当然这个数据也可以是对象），独立出一个享元，从而减少对象的创建，节省内存</p>
+        <p>观察者模式比较好理解，其实和发布订阅差不多。<br>举一个学生订阅课程的例子</p>
 <a id="more"></a>
-
 <pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
 
-<span class="token keyword">import</span> <span class="token string">"fmt"</span>
-
-<span class="token keyword">type</span> ImageFactory <span class="token keyword">struct</span> <span class="token punctuation">{</span>
-	maps <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">*</span>Image
+<span class="token comment">// 定义课程接口</span>
+<span class="token keyword">type</span> ISubject <span class="token keyword">interface</span> <span class="token punctuation">{</span>
+	<span class="token function">Attach</span><span class="token punctuation">(</span>IObserver<span class="token punctuation">)</span> <span class="token comment">// 添加观察者方法</span>
+	<span class="token function">Notify</span><span class="token punctuation">(</span><span class="token punctuation">)</span>          <span class="token comment">// 通知接口</span>
+	<span class="token function">UpdateTime</span><span class="token punctuation">(</span>time <span class="token builtin">string</span><span class="token punctuation">)</span>
 <span class="token punctuation">}</span>
 
-<span class="token keyword">func</span> <span class="token function">NewImageFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span>ImageFactory <span class="token punctuation">{</span>
-	<span class="token keyword">return</span> <span class="token operator">&amp;</span>ImageFactory<span class="token punctuation">{</span>maps<span class="token punctuation">:</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">*</span>Image<span class="token punctuation">)</span><span class="token punctuation">}</span>
+<span class="token comment">// 定义课程类</span>
+<span class="token keyword">type</span> Subject <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+	observers <span class="token punctuation">[</span><span class="token punctuation">]</span>IObserver
+	name      <span class="token builtin">string</span> <span class="token comment">// 课程名称</span>
+	time      <span class="token builtin">string</span> <span class="token comment">// 上课时间</span>
 <span class="token punctuation">}</span>
 
-<span class="token comment">// 获取共享数据</span>
-<span class="token keyword">func</span> <span class="token punctuation">(</span>f <span class="token operator">*</span>ImageFactory<span class="token punctuation">)</span> <span class="token function">Get</span><span class="token punctuation">(</span>filename <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">*</span>Image <span class="token punctuation">{</span>
-	<span class="token keyword">var</span> image <span class="token operator">=</span> f<span class="token punctuation">.</span>maps<span class="token punctuation">[</span>filename<span class="token punctuation">]</span>
-	<span class="token keyword">if</span> image <span class="token operator">==</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
-		<span class="token comment">// 当没有这个数据的时候,才进行新建</span>
-		image <span class="token operator">=</span> <span class="token function">NewImage</span><span class="token punctuation">(</span>filename<span class="token punctuation">)</span>
-		f<span class="token punctuation">.</span>maps<span class="token punctuation">[</span>filename<span class="token punctuation">]</span> <span class="token operator">=</span> image
-	<span class="token punctuation">}</span>
-	<span class="token keyword">return</span> image
-<span class="token punctuation">}</span>
-
-<span class="token comment">// 共享数据对象</span>
-<span class="token keyword">type</span> Image <span class="token keyword">struct</span> <span class="token punctuation">{</span>
-	data <span class="token builtin">string</span>
-<span class="token punctuation">}</span>
-
-<span class="token comment">// 新建共享数据对象</span>
-<span class="token keyword">func</span> <span class="token function">NewImage</span><span class="token punctuation">(</span>filename <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">*</span>Image <span class="token punctuation">{</span>
-	<span class="token keyword">return</span> <span class="token operator">&amp;</span>Image<span class="token punctuation">{</span>
-		data<span class="token punctuation">:</span> fmt<span class="token punctuation">.</span><span class="token function">Sprintf</span><span class="token punctuation">(</span><span class="token string">"image data %s"</span><span class="token punctuation">,</span> filename<span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token keyword">func</span> <span class="token function">NewSubject</span><span class="token punctuation">(</span>name <span class="token builtin">string</span><span class="token punctuation">)</span> ISubject <span class="token punctuation">{</span>
+	<span class="token keyword">return</span> <span class="token operator">&amp;</span>Subject<span class="token punctuation">{</span>
+		observers<span class="token punctuation">:</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span>IObserver<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+		name<span class="token punctuation">:</span>      name<span class="token punctuation">,</span>
 	<span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 
-<span class="token comment">// 返回对象数据</span>
-<span class="token keyword">func</span> <span class="token punctuation">(</span>i <span class="token operator">*</span>Image<span class="token punctuation">)</span> <span class="token function">Data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
-	<span class="token keyword">return</span> i<span class="token punctuation">.</span>data
+<span class="token comment">// 添加观察者</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Subject<span class="token punctuation">)</span> <span class="token function">Attach</span><span class="token punctuation">(</span>o IObserver<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	s<span class="token punctuation">.</span>observers <span class="token operator">=</span> <span class="token function">append</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span>observers<span class="token punctuation">,</span> o<span class="token punctuation">)</span>
 <span class="token punctuation">}</span>
 
-<span class="token keyword">type</span> ImageViewer <span class="token keyword">struct</span> <span class="token punctuation">{</span>
-	<span class="token operator">*</span>Image
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token function">NewImageViewer</span><span class="token punctuation">(</span>filename <span class="token builtin">string</span><span class="token punctuation">,</span> imageFactory <span class="token operator">*</span>ImageFactory<span class="token punctuation">)</span> <span class="token operator">*</span>ImageViewer <span class="token punctuation">{</span>
-	<span class="token keyword">return</span> <span class="token operator">&amp;</span>ImageViewer<span class="token punctuation">{</span>
-		Image<span class="token punctuation">:</span> imageFactory<span class="token punctuation">.</span><span class="token function">Get</span><span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token comment">// 通知观察者进行改变</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Subject<span class="token punctuation">)</span> <span class="token function">Notify</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> o <span class="token operator">:=</span> <span class="token keyword">range</span> s<span class="token punctuation">.</span>observers <span class="token punctuation">{</span>
+		o<span class="token punctuation">.</span><span class="token function">Update</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>
 	<span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 
-<span class="token keyword">func</span> <span class="token punctuation">(</span>i <span class="token operator">*</span>ImageViewer<span class="token punctuation">)</span> <span class="token function">Display</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Display: %s\n"</span><span class="token punctuation">,</span> i<span class="token punctuation">.</span><span class="token function">Data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Subject<span class="token punctuation">)</span> <span class="token function">UpdateTime</span><span class="token punctuation">(</span>time <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	s<span class="token punctuation">.</span>time <span class="token operator">=</span> time
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 定义观察者类</span>
+<span class="token keyword">type</span> IObserver <span class="token keyword">interface</span> <span class="token punctuation">{</span>
+	<span class="token function">Update</span><span class="token punctuation">(</span>subject ISubject<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> Student <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+	name <span class="token builtin">string</span>
+	sub  ISubject
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Student<span class="token punctuation">)</span> <span class="token function">Update</span><span class="token punctuation">(</span>subject ISubject<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	s<span class="token punctuation">.</span>sub <span class="token operator">=</span> subject
 <span class="token punctuation">}</span>
 
 <span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	nif <span class="token operator">:=</span> <span class="token function">NewImageFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-	iv <span class="token operator">:=</span> <span class="token function">NewImageViewer</span><span class="token punctuation">(</span><span class="token string">"beauty"</span><span class="token punctuation">,</span> nif<span class="token punctuation">)</span>
-	iv<span class="token punctuation">.</span><span class="token function">Display</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+	sbj <span class="token operator">:=</span> <span class="token function">NewSubject</span><span class="token punctuation">(</span><span class="token string">"线性代数"</span><span class="token punctuation">)</span>
+	lily <span class="token operator">:=</span> <span class="token operator">&amp;</span>Student<span class="token punctuation">{</span>name<span class="token punctuation">:</span> <span class="token string">"lily"</span><span class="token punctuation">}</span>
+
+	sbj<span class="token punctuation">.</span><span class="token function">Attach</span><span class="token punctuation">(</span>lily<span class="token punctuation">)</span>
+	sbj<span class="token punctuation">.</span><span class="token function">UpdateTime</span><span class="token punctuation">(</span><span class="token string">"12点半"</span><span class="token punctuation">)</span>
+	<span class="token comment">// ...</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
     </div>
 
     
@@ -409,7 +410,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://wuruipeng404.github.io/ckgq6e87u0000bros2675bddv/" title="理解设计模式之享元模式">https://wuruipeng404.github.io/ckgq6e87u0000bros2675bddv/</a>
+      <a href="https://wuruipeng404.github.io/ckgqdrmra0003abosfny2enuk/" title="理解设计模式之观察者模式">https://wuruipeng404.github.io/ckgqdrmra0003abosfny2enuk/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -418,20 +419,20 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/%E7%BB%93%E6%9E%84%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"><i class="fa fa-tag"></i> 结构型设计模式</a>
+              <a href="/tags/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"><i class="fa fa-tag"></i> 行为型设计模式</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/ckgq53fet0000ppos1l3l5biw/" rel="prev" title="理解设计模式之组合模式">
-                  <i class="fa fa-chevron-left"></i> 理解设计模式之组合模式
+                <a href="/ckgqdrmr30001abosgc2b20iv/" rel="prev" title="理解设计模式之中介者模式">
+                  <i class="fa fa-chevron-left"></i> 理解设计模式之中介者模式
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/ckgq6e87x0001bros5ehjdk3q/" rel="next" title="理解设计模式之装饰器模式">
-                  理解设计模式之装饰器模式 <i class="fa fa-chevron-right"></i>
+                <a href="/ckgqdrmqw0000abosbapmf0vi/" rel="next" title="理解设计模式之命令模式">
+                  理解设计模式之命令模式 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -573,7 +574,7 @@ NexT.utils.loadComments('#gitalk-container', () => {
       repo        : 'hexo-comments',
       owner       : 'wuruipeng404',
       admin       : ['wuruipeng404'],
-      id          : 'e2af0138c329d99730e5dffcb3fd2116',
+      id          : 'e0d8fbdd24d6c57d7d9f181ae38a054e',
         language: 'zh-CN',
       distractionFreeMode: true
     });
