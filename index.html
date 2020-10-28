@@ -192,20 +192,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -248,6 +248,93 @@
       
 
       
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckgt2qr6o0000mkos9qwr2nv2/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Rumple">
+      <meta itemprop="description" content="后端 架构 容器">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rumplestiltskin's Home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/ckgt2qr6o0000mkos9qwr2nv2/" class="post-title-link" itemprop="url">关于RabbitMQ消息队列的可靠性传输</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-10-28 13:21:20 / 修改时间：15:30:49" itemprop="dateCreated datePublished" datetime="2020-10-28T13:21:20+08:00">2020-10-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">消息队列</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>在使用消息队列的过程中如何保证消息的可靠性呢？<br>这个问题其实包含了几方面的小问题。</p>
+<ol>
+<li>数据丢失问题</li>
+<li>数据幂等性的问题</li>
+<li>重复消费的问题</li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/ckgt2qr6o0000mkos9qwr2nv2/#more" rel="contents">
+                阅读全文 »
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
     
 
 
@@ -608,10 +695,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2020-10-27 14:58:29 / 修改时间：14:59:13" itemprop="dateCreated datePublished" datetime="2020-10-27T14:58:29+08:00">2020-10-27</time>
+      <time title="创建时间：2020-10-27 14:58:29" itemprop="dateCreated datePublished" datetime="2020-10-27T14:58:29+08:00">2020-10-27</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-10-28 15:39:05" itemprop="dateModified" datetime="2020-10-28T15:39:05+08:00">2020-10-28</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -633,109 +726,14 @@
     
     <div class="post-body" itemprop="articleBody">
           <p>状态模式没啥好说的，就是用来分离行为与状态的。直接看例子</p>
-<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
-
-<span class="token keyword">import</span> <span class="token string">"fmt"</span>
-
-<span class="token keyword">type</span> Week <span class="token keyword">interface</span> <span class="token punctuation">{</span>
-	<span class="token function">Today</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-	<span class="token function">Next</span><span class="token punctuation">(</span><span class="token operator">*</span>DayContext<span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">type</span> DayContext <span class="token keyword">struct</span> <span class="token punctuation">{</span>
-	today Week
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token function">NewDayContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span>DayContext <span class="token punctuation">{</span>
-	<span class="token keyword">return</span> <span class="token operator">&amp;</span>DayContext<span class="token punctuation">{</span>
-		today<span class="token punctuation">:</span> <span class="token operator">&amp;</span>Sunday<span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-	<span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span>d <span class="token operator">*</span>DayContext<span class="token punctuation">)</span> <span class="token function">Today</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	d<span class="token punctuation">.</span>today<span class="token punctuation">.</span><span class="token function">Today</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span>d <span class="token operator">*</span>DayContext<span class="token punctuation">)</span> <span class="token function">Next</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	d<span class="token punctuation">.</span>today<span class="token punctuation">.</span><span class="token function">Next</span><span class="token punctuation">(</span>d<span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">type</span> Sunday <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Sunday<span class="token punctuation">)</span> <span class="token function">Today</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Sunday\n"</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Sunday<span class="token punctuation">)</span> <span class="token function">Next</span><span class="token punctuation">(</span>ctx <span class="token operator">*</span>DayContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	ctx<span class="token punctuation">.</span>today <span class="token operator">=</span> <span class="token operator">&amp;</span>Monday<span class="token punctuation">{</span><span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">type</span> Monday <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Monday<span class="token punctuation">)</span> <span class="token function">Today</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Monday\n"</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Monday<span class="token punctuation">)</span> <span class="token function">Next</span><span class="token punctuation">(</span>ctx <span class="token operator">*</span>DayContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	ctx<span class="token punctuation">.</span>today <span class="token operator">=</span> <span class="token operator">&amp;</span>Tuesday<span class="token punctuation">{</span><span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">type</span> Tuesday <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Tuesday<span class="token punctuation">)</span> <span class="token function">Today</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Tuesday\n"</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Tuesday<span class="token punctuation">)</span> <span class="token function">Next</span><span class="token punctuation">(</span>ctx <span class="token operator">*</span>DayContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	ctx<span class="token punctuation">.</span>today <span class="token operator">=</span> <span class="token operator">&amp;</span>Wednesday<span class="token punctuation">{</span><span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">type</span> Wednesday <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Wednesday<span class="token punctuation">)</span> <span class="token function">Today</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Wednesday\n"</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Wednesday<span class="token punctuation">)</span> <span class="token function">Next</span><span class="token punctuation">(</span>ctx <span class="token operator">*</span>DayContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	ctx<span class="token punctuation">.</span>today <span class="token operator">=</span> <span class="token operator">&amp;</span>Thursday<span class="token punctuation">{</span><span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">type</span> Thursday <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Thursday<span class="token punctuation">)</span> <span class="token function">Today</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Thursday\n"</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Thursday<span class="token punctuation">)</span> <span class="token function">Next</span><span class="token punctuation">(</span>ctx <span class="token operator">*</span>DayContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	ctx<span class="token punctuation">.</span>today <span class="token operator">=</span> <span class="token operator">&amp;</span>Friday<span class="token punctuation">{</span><span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">type</span> Friday <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Friday<span class="token punctuation">)</span> <span class="token function">Today</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Friday\n"</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Friday<span class="token punctuation">)</span> <span class="token function">Next</span><span class="token punctuation">(</span>ctx <span class="token operator">*</span>DayContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	ctx<span class="token punctuation">.</span>today <span class="token operator">=</span> <span class="token operator">&amp;</span>Saturday<span class="token punctuation">{</span><span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">type</span> Saturday <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Saturday<span class="token punctuation">)</span> <span class="token function">Today</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Saturday\n"</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Saturday<span class="token punctuation">)</span> <span class="token function">Next</span><span class="token punctuation">(</span>ctx <span class="token operator">*</span>DayContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	ctx<span class="token punctuation">.</span>today <span class="token operator">=</span> <span class="token operator">&amp;</span>Sunday<span class="token punctuation">{</span><span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	td <span class="token operator">:=</span> <span class="token function">NewDayContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-	td<span class="token punctuation">.</span><span class="token function">Next</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-	td<span class="token punctuation">.</span><span class="token function">Today</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/ckgrswuj70001nsosgvjy5oc1/#more" rel="contents">
+                阅读全文 »
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1067,94 +1065,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/ckgqdrmqw0000abosbapmf0vi/#more" rel="contents">
-                阅读全文 »
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckgqdrmra0003abosfny2enuk/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Rumple">
-      <meta itemprop="description" content="后端 架构 容器">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Rumplestiltskin's Home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/ckgqdrmra0003abosfny2enuk/" class="post-title-link" itemprop="url">理解设计模式之观察者模式</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-10-26 17:55:25" itemprop="dateCreated datePublished" datetime="2020-10-26T17:55:25+08:00">2020-10-26</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-10-27 09:36:13" itemprop="dateModified" datetime="2020-10-27T09:36:13+08:00">2020-10-27</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>观察者模式比较好理解，就是字面意思，其实和发布订阅差不多。<br>举一个学生订阅课程的例子</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/ckgqdrmra0003abosfny2enuk/#more" rel="contents">
                 阅读全文 »
               </a>
             </div>
