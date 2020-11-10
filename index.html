@@ -286,7 +286,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-11-10 15:10:01 / 修改时间：15:15:17" itemprop="dateCreated datePublished" datetime="2020-11-10T15:10:01+08:00">2020-11-10</time>
+      <time title="创建时间：2020-11-10 15:10:01 / 修改时间：15:16:56" itemprop="dateCreated datePublished" datetime="2020-11-10T15:10:01+08:00">2020-11-10</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -313,12 +313,12 @@
 ProxyCommand ~/.ssh/ssh-https-tunnel %h %p 
 Port 443
 Hostname ssh.github.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
-<li>下载 <code>ssh-https-tunnel</code><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">wget http://zwitterion.org/software/ssh-https-tunnel/ssh-https-tunnel
-``` 
-3. 给脚本加上执行权限
-```shell
-chmod +x ~/.ssh/ssh-https-tunnel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
-<li>配置代理地址<pre><code class="shell">vim ~/.ssh/ssh-https-tunnel
+<li>下载 <code>ssh-https-tunnel</code><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">wget</span> http://zwitterion.org/software/ssh-https-tunnel/ssh-https-tunnel
+``<span class="token variable"><span class="token variable">`</span> 
+<span class="token number">3</span>. 给脚本加上执行权限
+<span class="token variable">`</span></span>``bash
+<span class="token function">chmod</span> +x ~/.ssh/ssh-https-tunnel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>配置代理地址<pre><code class="bash">vim ~/.ssh/ssh-https-tunnel
 # 将下面两项改为你自己的保存即可
 my $proxy = "";
 my $proxy_port = ;</code></pre>
