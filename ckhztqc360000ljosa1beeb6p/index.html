@@ -22,21 +22,24 @@
     var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","scheme":"Mist","version":"8.0.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 
-  <meta name="description" content="策略模式一般是用来封装一系列的算法，让这些算法可以在运行时互换。复合开闭原则">
+  <meta name="description" content="从今天开始，我将更新K8S系列博文，从环境搭建，到K8S概念的详解，到在k8s上部署完整项目，乃至有可能对K8S的二次开发。未来可期">
 <meta property="og:type" content="article">
-<meta property="og:title" content="理解设计模式之策略模式">
-<meta property="og:url" content="https://wuruipeng404.github.io/ckgta1rpe001rnfos22pv7gw9/index.html">
+<meta property="og:title" content="k8s之在mac上搭建开发环境(一)">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckhztqc360000ljosa1beeb6p/index.html">
 <meta property="og:site_name" content="Rumplestiltskin's Home">
-<meta property="og:description" content="策略模式一般是用来封装一系列的算法，让这些算法可以在运行时互换。复合开闭原则">
+<meta property="og:description" content="从今天开始，我将更新K8S系列博文，从环境搭建，到K8S概念的详解，到在k8s上部署完整项目，乃至有可能对K8S的二次开发。未来可期">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-10-27T06:51:40.000Z">
-<meta property="article:modified_time" content="2020-10-27T06:54:35.962Z">
+<meta property="og:image" content="https://wuruipeng404.github.io/images/k8s/dockerconfig.png">
+<meta property="og:image" content="https://wuruipeng404.github.io/images/k8s/startk8s.png">
+<meta property="article:published_time" content="2020-11-27T05:18:17.000Z">
+<meta property="article:modified_time" content="2020-11-27T05:46:26.537Z">
 <meta property="article:author" content="Rumple">
-<meta property="article:tag" content="行为型设计模式">
+<meta property="article:tag" content="k8s">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wuruipeng404.github.io/images/k8s/dockerconfig.png">
 
 
-<link rel="canonical" href="https://wuruipeng404.github.io/ckgta1rpe001rnfos22pv7gw9/">
+<link rel="canonical" href="https://wuruipeng404.github.io/ckhztqc360000ljosa1beeb6p/">
 
 
 <script class="page-configurations">
@@ -49,7 +52,7 @@
   };
 </script>
 
-  <title>理解设计模式之策略模式 | Rumplestiltskin's Home</title>
+  <title>k8s之在mac上搭建开发环境(一) | Rumplestiltskin's Home</title>
   
 
 
@@ -170,7 +173,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -183,6 +186,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85docker-desktop%EF%BC%8C%E8%BF%99%E4%B8%AA%E6%B2%A1%E4%BB%80%E4%B9%88%E5%A5%BD%E8%AF%B4%E7%9A%84"><span class="nav-number">1.</span> <span class="nav-text">1. 安装docker-desktop，这个没什么好说的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%85%8D%E7%BD%AE%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E6%BA%90%E8%BF%9B%E8%A1%8C%E5%8A%A0%E9%80%9F"><span class="nav-number">2.</span> <span class="nav-text">2. 配置镜像仓库源进行加速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%8B%89%E5%8F%96K8S%E9%95%9C%E5%83%8F"><span class="nav-number">3.</span> <span class="nav-text">3. 拉取K8S镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E9%85%8D%E7%BD%AEDaskboard"><span class="nav-number">4.</span> <span class="nav-text">4. 配置Daskboard</span></a></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -263,7 +267,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckgta1rpe001rnfos22pv7gw9/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckhztqc360000ljosa1beeb6p/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -276,7 +280,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          理解设计模式之策略模式
+          k8s之在mac上搭建开发环境(一)
         </h1>
 
         <div class="post-meta-container">
@@ -288,7 +292,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-10-27 14:51:40 / 修改时间：14:54:35" itemprop="dateCreated datePublished" datetime="2020-10-27T14:51:40+08:00">2020-10-27</time>
+      <time title="创建时间：2020-11-27 13:18:17 / 修改时间：13:46:26" itemprop="dateCreated datePublished" datetime="2020-11-27T13:18:17+08:00">2020-11-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -296,7 +300,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
+          <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
         </span>
     </span>
 
@@ -317,61 +321,46 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>策略模式一般是用来封装一系列的算法，让这些算法可以在运行时互换。复合开闭原则</p>
+        <p>从今天开始，我将更新K8S系列博文，从环境搭建，到K8S概念的详解，到在k8s上部署完整项目，乃至有可能对K8S的二次开发。未来可期</p>
 <a id="more"></a>
-<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
 
-<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+<h3 id="1-安装docker-desktop，这个没什么好说的"><a href="#1-安装docker-desktop，这个没什么好说的" class="headerlink" title="1. 安装docker-desktop，这个没什么好说的"></a>1. 安装docker-desktop，这个没什么好说的</h3><p>  <a target="_blank" rel="noopener" href="https://www.docker.com/products/docker-desktop">docker</a></p>
+<h3 id="2-配置镜像仓库源进行加速"><a href="#2-配置镜像仓库源进行加速" class="headerlink" title="2. 配置镜像仓库源进行加速"></a>2. 配置镜像仓库源进行加速</h3><p>  可以选择的源有很多</p>
+<ul>
+<li><p>docker官方 <code>https://registry.docker-cn.com</code></p>
+</li>
+<li><p>网易 <code>http://hub-mirror.c.163.com</code></p>
+</li>
+<li><p>中科大 <code>http://docker.mirrors.ustc.edu.cn</code></p>
+<p><img src="/images/k8s/dockerconfig.png" alt="docker-source"></p>
+</li>
+</ul>
+<h3 id="3-拉取K8S镜像"><a href="#3-拉取K8S镜像" class="headerlink" title="3. 拉取K8S镜像"></a>3. 拉取K8S镜像</h3><p>  众所周知，由于GFW，在不作特殊处理的情况下，K8S的镜像是拉不下来的，这里我们借用此项目来拉镜像<a target="_blank" rel="noopener" href="https://github.com/AliyunContainerService/k8s-for-docker-desktop">k8s-for-docker-desktop</a></p>
+<ol>
+<li><code>git clone https://github.com/AliyunContainerService/k8s-for-docker-desktop.git</code></li>
+<li>进入项目目录执行 <code>./load_images.sh</code> (注意确认好自己的版本)</li>
+<li>开启K8S<br><img src="/images/k8s/startk8s.png" alt="startk8s"><br>如果长时间没有成功开启，可以运行如下命令查看日志<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token assign-left variable">pred</span><span class="token operator">=</span><span class="token string">'process matches ".*(ocker|vpnkit).*"
+ || (process in {"taskgated-helper", "launchservicesd", "kernel"} &amp;&amp; eventMessage contains[c] "docker")'</span>
+ /usr/bin/log stream --style syslog --level<span class="token operator">=</span>debug --color<span class="token operator">=</span>always --predicate <span class="token string">"<span class="token variable">$pred</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
+<li>验证集群状态<pre><code class="bash"># 注意如果你配置了终端代理 这里可能会有问题 可以取消，或者在命令前加入 http_proxy="" https_proxy=""
+kubectl cluster-info</code></pre>
+</li>
+</ol>
+<h3 id="4-配置Daskboard"><a href="#4-配置Daskboard" class="headerlink" title="4. 配置Daskboard"></a>4. 配置Daskboard</h3><p>  <a target="_blank" rel="noopener" href="https://github.com/kubernetes/dashboard">K8S-DaskBoard</a></p>
+<ol>
+<li>安装 <code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.4/aio/deploy/recommended.yaml</code></li>
+<li>开启访问 <code>kubectl proxy</code></li>
+<li>通过 <code>http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/</code> 连接访问dashboard</li>
+<li>这里会有两种认证方式进行选择，1是token，2是配置文件.<ol>
+<li>配置访问令牌<pre><code class="bash">TOKEN=$(kubectl -n kube-system describe secret default| awk '$1=="token:"{print $2}')
+kubectl config set-credentials docker-for-desktop --token="${TOKEN}"
+echo $TOKEN</code></pre>
+</li>
+<li>将获得的token 填入认证框即可   </li>
+</ol>
+</li>
+</ol>
 
-<span class="token comment">// 定义付款对象</span>
-<span class="token keyword">type</span> Payment <span class="token keyword">struct</span> <span class="token punctuation">{</span>
-	context  <span class="token operator">*</span>PaymentContext <span class="token comment">// 上下文</span>
-	strategy PaymentStrategy <span class="token comment">// 策略</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span>p <span class="token operator">*</span>Payment<span class="token punctuation">)</span> <span class="token function">Pay</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	p<span class="token punctuation">.</span>strategy<span class="token punctuation">.</span><span class="token function">Pay</span><span class="token punctuation">(</span>p<span class="token punctuation">.</span>context<span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token comment">// 付款上下文</span>
-<span class="token keyword">type</span> PaymentContext <span class="token keyword">struct</span> <span class="token punctuation">{</span>
-	Name   <span class="token builtin">string</span>
-	CardID <span class="token builtin">string</span>
-	Money  <span class="token builtin">int</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token function">NewPayment</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> cardID <span class="token builtin">string</span><span class="token punctuation">,</span> money <span class="token builtin">int</span><span class="token punctuation">,</span> strategy PaymentStrategy<span class="token punctuation">)</span> <span class="token operator">*</span>Payment <span class="token punctuation">{</span>
-	<span class="token keyword">return</span> <span class="token operator">&amp;</span>Payment<span class="token punctuation">{</span>
-		context<span class="token punctuation">:</span> <span class="token operator">&amp;</span>PaymentContext<span class="token punctuation">{</span>
-			Name<span class="token punctuation">:</span>   name<span class="token punctuation">,</span>
-			CardID<span class="token punctuation">:</span> cardID<span class="token punctuation">,</span>
-			Money<span class="token punctuation">:</span>  money<span class="token punctuation">,</span>
-		<span class="token punctuation">}</span><span class="token punctuation">,</span>
-		strategy<span class="token punctuation">:</span> strategy<span class="token punctuation">,</span>
-	<span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token comment">// 付款策略 接口(算法接口)</span>
-<span class="token keyword">type</span> PaymentStrategy <span class="token keyword">interface</span> <span class="token punctuation">{</span>
-	<span class="token function">Pay</span><span class="token punctuation">(</span><span class="token operator">*</span>PaymentContext<span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">type</span> Cash <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Cash<span class="token punctuation">)</span> <span class="token function">Pay</span><span class="token punctuation">(</span>ctx <span class="token operator">*</span>PaymentContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Pay $%d to %s by cash"</span><span class="token punctuation">,</span> ctx<span class="token punctuation">.</span>Money<span class="token punctuation">,</span> ctx<span class="token punctuation">.</span>Name<span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">type</span> Wechat <span class="token keyword">struct</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token punctuation">(</span><span class="token operator">*</span>Wechat<span class="token punctuation">)</span> <span class="token function">Pay</span><span class="token punctuation">(</span>ctx <span class="token operator">*</span>PaymentContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"Pay $%d to %s by wechat account %s"</span><span class="token punctuation">,</span> ctx<span class="token punctuation">.</span>Money<span class="token punctuation">,</span> ctx<span class="token punctuation">.</span>Name<span class="token punctuation">,</span> ctx<span class="token punctuation">.</span>CardID<span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	strategy <span class="token operator">:=</span> <span class="token operator">&amp;</span>Cash<span class="token punctuation">{</span><span class="token punctuation">}</span>
-	<span class="token function">NewPayment</span><span class="token punctuation">(</span><span class="token string">"rumple"</span><span class="token punctuation">,</span> <span class="token string">"12938282"</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">,</span> strategy<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Pay</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
     </div>
 
     
@@ -406,7 +395,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://wuruipeng404.github.io/ckgta1rpe001rnfos22pv7gw9/" title="理解设计模式之策略模式">https://wuruipeng404.github.io/ckgta1rpe001rnfos22pv7gw9/</a>
+      <a href="https://wuruipeng404.github.io/ckhztqc360000ljosa1beeb6p/" title="k8s之在mac上搭建开发环境(一)">https://wuruipeng404.github.io/ckhztqc360000ljosa1beeb6p/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -415,21 +404,18 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/%E8%A1%8C%E4%B8%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"><i class="fa fa-tag"></i> 行为型设计模式</a>
+              <a href="/tags/k8s/" rel="tag"><i class="fa fa-tag"></i> k8s</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/ckgta1rpa001infos9k396tbf/" rel="prev" title="理解设计模式之模板方法模式">
-                  <i class="fa fa-chevron-left"></i> 理解设计模式之模板方法模式
+                <a href="/ckhoe2wl200003zos8on1hhcu/" rel="prev" title="关于Golang高并发高效率代码的一些实践">
+                  <i class="fa fa-chevron-left"></i> 关于Golang高并发高效率代码的一些实践
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/ckgta1rpd001pnfos1pk82k2v/" rel="next" title="理解设计模式之状态模式">
-                  理解设计模式之状态模式 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -570,7 +556,7 @@ NexT.utils.loadComments('#gitalk-container', () => {
       repo        : 'hexo-comments',
       owner       : 'wuruipeng404',
       admin       : ['wuruipeng404'],
-      id          : 'a7b2350fade8d0d0a476f0429aec7dad',
+      id          : '7bc9794ab723385304aafcb060ef450e',
         language: 'zh-CN',
       distractionFreeMode: true
     });
