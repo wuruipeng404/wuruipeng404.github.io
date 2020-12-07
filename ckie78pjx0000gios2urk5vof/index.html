@@ -1,0 +1,655 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+
+
+
+
+
+  
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="本篇主要来解释一下k8s繁多的概念  我觉得吧第一遍不用一定要全部理解，先大致过一下，以后会慢慢熟悉  K8S中的概念按我的理解把他分为这样两类：  架构类：所谓架构类，就是指K8S自身部署，调度，的一些组件和概念  服务类：就是针对我们自己的服务调度，部署，控制，所用到的概念">
+<meta property="og:type" content="article">
+<meta property="og:title" content="k8s之基础概念理解(二)">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckie78pjx0000gios2urk5vof/index.html">
+<meta property="og:site_name" content="Rumplestiltskin's Home">
+<meta property="og:description" content="本篇主要来解释一下k8s繁多的概念  我觉得吧第一遍不用一定要全部理解，先大致过一下，以后会慢慢熟悉  K8S中的概念按我的理解把他分为这样两类：  架构类：所谓架构类，就是指K8S自身部署，调度，的一些组件和概念  服务类：就是针对我们自己的服务调度，部署，控制，所用到的概念">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wuruipeng404.github.io/images/k8s/k8s.png">
+<meta property="article:published_time" content="2020-12-07T06:12:09.000Z">
+<meta property="article:modified_time" content="2020-12-07T06:58:00.366Z">
+<meta property="article:author" content="Rumple">
+<meta property="article:tag" content="k8s">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wuruipeng404.github.io/images/k8s/k8s.png">
+
+
+<link rel="canonical" href="https://wuruipeng404.github.io/ckie78pjx0000gios2urk5vof/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>k8s之基础概念理解(二) | Rumplestiltskin's Home</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css');loadCss('//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css');loadCss('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css"></noscript></head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Rumplestiltskin's Home</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life Long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E7%AF%87%E4%B8%BB%E8%A6%81%E6%9D%A5%E8%A7%A3%E9%87%8A%E4%B8%80%E4%B8%8Bk8s%E7%B9%81%E5%A4%9A%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">本篇主要来解释一下k8s繁多的概念</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E7%B1%BB"><span class="nav-number"></span> <span class="nav-text">架构类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%B1%BB"><span class="nav-number"></span> <span class="nav-text">服务类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pod"><span class="nav-number">1.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Label"><span class="nav-number">2.</span> <span class="nav-text">Label</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Replication-Controller-RC"><span class="nav-number">3.</span> <span class="nav-text">Replication Controller(RC)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Replica-Set"><span class="nav-number">4.</span> <span class="nav-text">Replica Set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deployment"><span class="nav-number">5.</span> <span class="nav-text">Deployment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Horizontal-Pod-Autoscaler-HPA"><span class="nav-number">6.</span> <span class="nav-text">Horizontal Pod Autoscaler(HPA)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#StatefulSet"><span class="nav-number">7.</span> <span class="nav-text">StatefulSet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DaemonSet"><span class="nav-number">8.</span> <span class="nav-text">DaemonSet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service"><span class="nav-number">9.</span> <span class="nav-text">Service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Job-amp-amp-CronJob"><span class="nav-number">10.</span> <span class="nav-text">Job &amp;&amp; CronJob</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Volume"><span class="nav-number">11.</span> <span class="nav-text">Volume</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Persistent-Volume"><span class="nav-number">12.</span> <span class="nav-text">Persistent Volume</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Namespaces"><span class="nav-number">13.</span> <span class="nav-text">Namespaces</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Annotation"><span class="nav-number">14.</span> <span class="nav-text">Annotation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConfigMap"><span class="nav-number">15.</span> <span class="nav-text">ConfigMap</span></a></li></ol></li></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Rumple" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Rumple</p>
+  <div class="site-description" itemprop="description">后端 架构 容器</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wuruipeng404" title="GitHub → https://github.com/wuruipeng404" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wrp357711589@163.com" title="E-Mail → mailto:wrp357711589@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckie78pjx0000gios2urk5vof/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Rumple">
+      <meta itemprop="description" content="后端 架构 容器">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rumplestiltskin's Home">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          k8s之基础概念理解(二)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-12-07 14:12:09 / 修改时间：14:58:00" itemprop="dateCreated datePublished" datetime="2020-12-07T14:12:09+08:00">2020-12-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+          <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="本篇主要来解释一下k8s繁多的概念"><a href="#本篇主要来解释一下k8s繁多的概念" class="headerlink" title="本篇主要来解释一下k8s繁多的概念"></a>本篇主要来解释一下k8s繁多的概念</h3><p>  我觉得吧第一遍不用一定要全部理解，先大致过一下，以后会慢慢熟悉<br>  K8S中的概念按我的理解把他分为这样两类：<br>  <em>架构类</em>：所谓架构类，就是指K8S自身部署，调度，的一些组件和概念<br>  <em>服务类</em>：就是针对我们自己的服务调度，部署，控制，所用到的概念</p>
+<a id="more"></a>
+<h2 id="架构类"><a href="#架构类" class="headerlink" title="架构类"></a>架构类</h2><p>  首先，我们先看一张K8S的架构图。另外我们知道K8S是一个集群所以一定是有Master(管理节点)和Node(工作节点)<br>  <img src="/images/k8s/k8s.png" alt="k8s"></p>
+<p>  这里我提取如下概念归类为架构部分</p>
+<ul>
+<li>Master：k8s集群的大脑,负责管理和控制整个K8S集群。<ul>
+<li>API-Server: 提供了HTTP Rest接口的关键服务进程，是Kubernetes里所有资源的增、删、改、查等操作的唯一入口，也是集群控制的入口进程。</li>
+<li>Scheduler: 负责资源调度（Pod 调度）的进程，相当于公交公司的“调度室”。</li>
+<li>ControllerManager：Kubernetes里所有资源对象的自动化控制中心，可以将其理解为资源对象的“大总管”。</li>
+<li>ETCD： 一个强一致性的KV存储数据库，用来存放集群状态和配置，以及资源对象。</li>
+<li>kubedns：主要用来做服务发现，能够通过服务名称去访问服务</li>
+</ul>
+</li>
+<li>Node： 集群中的其他节点称为Node,可以是物理机,也可以是虚拟机<ul>
+<li>kubelet: 负责Pod对应的容器的创建、启停等任务，同时与Master密切协作，实现集群管理的基本功能。</li>
+<li>kube-proxy: 实现Kubernetes Service的通信与负载均衡机制的重要组件。</li>
+<li>docker engine: Docker引擎，负责本机的容器创建和管理工作。(注意在K8S 1.20版本即将弃用)</li>
+</ul>
+</li>
+<li>kubectl： k8s客户端</li>
+<li>kubeadm： 安装K8S集群的一个工具</li>
+</ul>
+<h2 id="服务类"><a href="#服务类" class="headerlink" title="服务类"></a>服务类</h2><h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><blockquote>
+<p>k8s最小的资源调度单元,每个pod都包含一个叫做跟容器的Pause容器,以及若干其他服务容器,服务容器共享Pause容器的资源,比如IP,Volume等. </p>
+</blockquote>
+<p>   一些特征:</p>
+<ul>
+<li>每个Pod都有一个唯一IP,所有不同主机上的Pod是可以直接进行通信的  </li>
+<li>Pod中的一个容器挂了,k8s会重启Pod中所有的容器</li>
+<li>如果Pod所在Node宕机,那么Pod中所有的服务会被调度到别的Node上去运行</li>
+</ul>
+<h3 id="Label"><a href="#Label" class="headerlink" title="Label"></a>Label</h3><blockquote>
+<p>label就是一对键值对,可以附加到任何资源对象上,资源对象上也可以附加任意数量的label.主要用于区分分类管理<br>  Label Selector 的一些filter语法</p>
+</blockquote>
+<ul>
+<li>name =</li>
+<li>name !=</li>
+<li>name in ()</li>
+<li>name not in ()</li>
+</ul>
+<h3 id="Replication-Controller-RC"><a href="#Replication-Controller-RC" class="headerlink" title="Replication Controller(RC)"></a>Replication Controller(RC)</h3><blockquote>
+<p>定义了一个期望的场景，即声明某种Pod的副本数量在任意时刻都符合某个预期值</p>
+</blockquote>
+<p>   所以其定义包括如下部分</p>
+<ul>
+<li>Pod期待的副本数量</li>
+<li>用于筛选目标Pod的Label Selector</li>
+<li>当Pod副本数量小于预期时,用于创建Pod的模板(Template) </li>
+</ul>
+<h3 id="Replica-Set"><a href="#Replica-Set" class="headerlink" title="Replica Set"></a>Replica Set</h3><blockquote>
+<p>RS是下一代的RC,功能比RC更强,RC的label selector只支持等式,而RS支持基于集合</p>
+</blockquote>
+<p>   特性:</p>
+<ul>
+<li>在大多数情况下，我们通过定义一个RC实现Pod的创建及副本数量的自动控制。</li>
+<li>在RC里包括完整的Pod定义模板。</li>
+<li>RC通过Label Selector机制实现对Pod副本的自动控制。</li>
+<li>通过改变RC里的Pod副本数量，可以实现Pod的扩容或缩容。</li>
+<li>通过改变RC里Pod模板中的镜像版本，可以实现Pod的滚动升级。</li>
+</ul>
+<h3 id="Deployment"><a href="#Deployment" class="headerlink" title="Deployment"></a>Deployment</h3><blockquote>
+<p>deployment是对于RC的进一步的升级,内部使用依旧是RC,其中最大的一个升级是可以随时知道当前pod的部署进度</p>
+</blockquote>
+<p>   一些典型场景:</p>
+<ul>
+<li>创建一个Deployment对象来生成对应的Replica Set并完成Pod副本的创建。</li>
+<li>检查Deployment的状态来看部署动作是否完成（Pod副本数量 是否达到预期的值）。</li>
+<li>更新Deployment以创建新的Pod（比如镜像升级）。</li>
+<li>如果当前Deployment不稳定，则回滚到一个早先的Deployment版本。</li>
+<li>暂停Deployment以便于一次性修改多个PodTemplateSpec的配置项，之后再恢复Deployment，进行新的发布。</li>
+<li>扩展Deployment以应对高负载。</li>
+<li>查看Deployment的状态，以此作为发布是否成功的指标。 </li>
+<li>清理不再需要的旧版本ReplicaSets。 </li>
+</ul>
+<h3 id="Horizontal-Pod-Autoscaler-HPA"><a href="#Horizontal-Pod-Autoscaler-HPA" class="headerlink" title="Horizontal Pod Autoscaler(HPA)"></a>Horizontal Pod Autoscaler(HPA)</h3><blockquote>
+<p>横向自动扩缩容</p>
+</blockquote>
+<p>   衡量指标:</p>
+<ul>
+<li>CPUUtilizationPercentage: 目标Pod所有副本的cpu利用率的平均值</li>
+<li>应用程序自定义的度量指标，比如服务在每秒内的相应请求数（TPS或QPS）   </li>
+</ul>
+<h3 id="StatefulSet"><a href="#StatefulSet" class="headerlink" title="StatefulSet"></a>StatefulSet</h3><blockquote>
+<p>专门用来部署有状态的服务,比如一些中间件MySQL,Redis,Mongo集群等.</p>
+</blockquote>
+<p>   特性:</p>
+<ul>
+<li>StatefulSet里的每个Pod都有稳定、唯一的网络标识，可以用来发现集群内的其他成员。假设StatefulSet的名称为kafka，那么第1个Pod叫kafka-0，第2个叫kafka-1，以此类推。</li>
+<li>StatefulSet控制的Pod副本的启停顺序是受控的，操作第n个Pod时，前n-1个Pod已经是运行且准备好的状态。</li>
+<li>StatefulSet里的Pod采用稳定的持久化存储卷，通过PV或PVC来实现，删除Pod时默认不会删除与StatefulSet相关的存储卷（为了保证数据的安全）。</li>
+</ul>
+<h3 id="DaemonSet"><a href="#DaemonSet" class="headerlink" title="DaemonSet"></a>DaemonSet</h3><blockquote>
+<p>当一种pod在每个Node必须部署且只能部署一个副部时,这就是DaemonSet</p>
+</blockquote>
+<h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><blockquote>
+<p>Service就是微服务架构当中的微服务</p>
+</blockquote>
+<ul>
+<li>ClusterIP: Service 独有,在整个生命周期内不变</li>
+<li>PodIP: </li>
+<li>NodeIP: 外部需要访问必须通过 Node IP通常会搭载一个外部LB,比如HAProxy </li>
+</ul>
+<h3 id="Job-amp-amp-CronJob"><a href="#Job-amp-amp-CronJob" class="headerlink" title="Job &amp;&amp; CronJob"></a>Job &amp;&amp; CronJob</h3><blockquote>
+<p>同样是Pod控制器,但其中的任务只允许一次,运行完毕 就销毁了,而CronJob顾名思义 轮训的任务.</p>
+</blockquote>
+<h3 id="Volume"><a href="#Volume" class="headerlink" title="Volume"></a>Volume</h3><blockquote>
+<p>Pod中能被多个容器所共享的目录</p>
+</blockquote>
+<p>   类型:</p>
+<ul>
+<li><p>emptyDir: 在pod分配到Node时创建,初始为空,无需指定宿主机上的路径,当pod被移除,也会被永久删除.</p>
+<p>主要作用:</p>
+<ul>
+<li>临时空间，例如用于某些应用程序运行时所需的临时目录，且无须永久保留。</li>
+<li>长时间任务的中间过程CheckPoint的临时保存目录。</li>
+<li>一个容器需要从另一个容器中获取数据的目录（多容器共享目录）。</li>
+</ul>
+</li>
+<li><p>hostPath: 永久保存在宿主机上</p>
+</li>
+<li><p>nfs: </p>
+</li>
+<li><p>iscsi：使用iSCSI存储设备上的目录挂载到Pod中。</p>
+</li>
+<li><p>flocker：使用Flocker管理存储卷。</p>
+</li>
+<li><p>glusterfs：使用开源GlusterFS网络文件系统的目录挂载到Pod中。</p>
+</li>
+<li><p>rbd：使用Ceph块设备共享存储（Rados Block Device）挂载到Pod中。</p>
+</li>
+<li><p>gitRepo：通过挂载一个空目录，并从Git库clone一个git repository以供Pod使用。</p>
+</li>
+<li><p>secret：一个Secret Volume用于为Pod提供加密的信息，你可以将定义在Kubernetes中的Secret直接挂载为文件让Pod访问。Secret Volume是通过TMFS（内存文件系统）实现的，这种类型的Volume总是不会被持久化的。</p>
+</li>
+</ul>
+<h3 id="Persistent-Volume"><a href="#Persistent-Volume" class="headerlink" title="Persistent Volume"></a>Persistent Volume</h3><blockquote>
+<p>PV是一种独立的资源,是网络存储对应的一块存储,与Volume类似但有以下区别</p>
+</blockquote>
+<ul>
+<li>PV只能是网络存储，不属于任何Node，但可以在每个Node上访问。</li>
+<li>PV并不是被定义在Pod上的，而是独立于Pod之外定义的。 </li>
+<li>PV目前支持的类型包括：gcePersistentDisk、 AWSElasticBlockStore、AzureFile、AzureDisk、FC（Fibre Channel）、 Flocker、NFS、iSCSI、RBD（Rados Block Device）、CephFS、 Cinder、GlusterFS、VsphereVolume、Quobyte Volumes、VMware Photon、Portworx Volumes、ScaleIO Volumes和HostPath（仅供单机测试）。</li>
+</ul>
+<h3 id="Namespaces"><a href="#Namespaces" class="headerlink" title="Namespaces"></a>Namespaces</h3><blockquote>
+<p>用于多租户的资源隔离</p>
+</blockquote>
+<h3 id="Annotation"><a href="#Annotation" class="headerlink" title="Annotation"></a>Annotation</h3><blockquote>
+<p>注解:与Label类似,但是是用户自定义的,而Label是资源的元数据</p>
+</blockquote>
+<h3 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h3><blockquote>
+<p>解决了 docker 修改运行时配置<em>必须</em>挂载文件, 或者写入环境变量的问题.</p>
+</blockquote>
+<p>   典型用法:</p>
+<ul>
+<li>生成为容器内的环境变量。</li>
+<li>设置容器启动命令的启动参数（需设置为环境变量）。</li>
+<li>以Volume的形式挂载为容器内部的文件或目录。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>人生苦短我用Python,Golang,Rust</div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechat.jpeg" alt="Rumple 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/zfb.jpeg" alt="Rumple 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Rumple
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://wuruipeng404.github.io/ckie78pjx0000gios2urk5vof/" title="k8s之基础概念理解(二)">https://wuruipeng404.github.io/ckie78pjx0000gios2urk5vof/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/k8s/" rel="tag"><i class="fa fa-tag"></i> k8s</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/ckie5cbij0000j5osgd3p2mb2/" rel="prev" title="记一次磁盘满后引发的血案">
+                  <i class="fa fa-chevron-left"></i> 记一次磁盘满后引发的血案
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  © 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rumple</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  <script async="" src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/bundle.js"></script><script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  ;
+
+NexT.utils.loadComments('#gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'f69af37424dec003dd80',
+      clientSecret: 'cf2dd6f7c02d71b7529a35bad785e0f6c403d9a7',
+      repo        : 'hexo-comments',
+      owner       : 'wuruipeng404',
+      admin       : ['wuruipeng404'],
+      id          : '8a6a8c08c77c681591d3311dd01adf8e',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script></body></html>
