@@ -1,0 +1,652 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+
+
+
+
+
+  
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="MySQL的版本一下子跳跃这么大，用手指想就有很多新的东西了。下面我们就来详细了解一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL8的新特性">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckiye7cmp001sx6osdvczgtfg/index.html">
+<meta property="og:site_name" content="Rumplestiltskin's Home">
+<meta property="og:description" content="MySQL的版本一下子跳跃这么大，用手指想就有很多新的东西了。下面我们就来详细了解一下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wuruipeng404.github.io/images/mysql/sql8.image">
+<meta property="og:image" content="https://wuruipeng404.github.io/images/mysql/sql8doc.image">
+<meta property="og:image" content="https://wuruipeng404.github.io/images/mysql/sql8char.image">
+<meta property="og:image" content="https://wuruipeng404.github.io/images/mysql/sql8source.image">
+<meta property="og:image" content="https://wuruipeng404.github.io/images/mysql/sql8dict.image">
+<meta property="og:image" content="https://wuruipeng404.github.io/images/mysql/sql8mgr.image">
+<meta property="article:published_time" content="2020-10-29T07:36:48.000Z">
+<meta property="article:modified_time" content="2020-10-29T08:27:26.322Z">
+<meta property="article:author" content="Rumple">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wuruipeng404.github.io/images/mysql/sql8.image">
+
+
+<link rel="canonical" href="https://wuruipeng404.github.io/ckiye7cmp001sx6osdvczgtfg/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>MySQL8的新特性 | Rumplestiltskin's Home</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css');loadCss('//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css');loadCss('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css"></noscript></head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Rumplestiltskin's Home</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life Long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%A7%92%E7%BA%A7%E5%8A%A0%E5%88%97"><span class="nav-number">1.</span> <span class="nav-text">1. 秒级加列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87"><span class="nav-number">2.</span> <span class="nav-text">2. 性能提升</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">3.</span> <span class="nav-text">3. 文档数据库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-SQL%E5%A2%9E%E5%BC%BA"><span class="nav-number">4.</span> <span class="nav-text">4. SQL增强</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%AC%E7%94%A8%E8%A1%A8%E8%A1%A8%E8%BE%BE%E5%BC%8F%EF%BC%88CTE%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">公用表表达式（CTE）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E8%A7%81%E7%B4%A2%E5%BC%95%EF%BC%88Invisible-Indexes%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">不可见索引（Invisible Indexes）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%99%8D%E5%BA%8F%E7%B4%A2%E5%BC%95%EF%BC%88Descending-Indexes%EF%BC%89"><span class="nav-number">4.3.</span> <span class="nav-text">降序索引（Descending Indexes）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E7%B4%A2%E5%BC%95%EF%BC%88Functional-Indexes%EF%BC%89"><span class="nav-number">4.4.</span> <span class="nav-text">函数索引（Functional Indexes）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E9%BB%98%E8%AE%A4%E5%AD%97%E7%AC%A6%E9%9B%86utf8mb4"><span class="nav-number">5.</span> <span class="nav-text">5. 默认字符集utf8mb4</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E4%B8%80%E8%87%B4%E6%80%A7%E6%9F%A5%E8%AF%A2%E6%94%B9%E8%BF%9B"><span class="nav-number">6.</span> <span class="nav-text">6. 一致性查询改进</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E8%B5%84%E6%BA%90%E7%BB%84"><span class="nav-number">7.</span> <span class="nav-text">7. 资源组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-%E6%96%B0%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%97%E5%85%B8"><span class="nav-number">8.</span> <span class="nav-text">8. 新的数据字典</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-MGR-%E5%A2%9E%E5%BC%BA"><span class="nav-number">9.</span> <span class="nav-text">9. MGR 增强</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-%E5%AE%89%E5%85%A8%E6%80%A7%E5%A2%9E%E5%BC%BA"><span class="nav-number">10.</span> <span class="nav-text">10. 安全性增强</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-%E5%A4%8D%E5%88%B6%E5%A2%9E%E5%BC%BA"><span class="nav-number">11.</span> <span class="nav-text">11. 复制增强</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-%E5%AE%9E%E4%BE%8B%E5%85%8B%E9%9A%86"><span class="nav-number">12.</span> <span class="nav-text">12. 实例克隆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13-%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">13.</span> <span class="nav-text">13. 全局变量持久化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14-%E5%85%B6%E4%BB%96"><span class="nav-number">14.</span> <span class="nav-text">14. 其他</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Rumple" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Rumple</p>
+  <div class="site-description" itemprop="description">后端 架构 容器</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wuruipeng404" title="GitHub → https://github.com/wuruipeng404" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wrp357711589@163.com" title="E-Mail → mailto:wrp357711589@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckiye7cmp001sx6osdvczgtfg/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Rumple">
+      <meta itemprop="description" content="后端 架构 容器">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rumplestiltskin's Home">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MySQL8的新特性
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-10-29 15:36:48 / 修改时间：16:27:26" itemprop="dateCreated datePublished" datetime="2020-10-29T15:36:48+08:00">2020-10-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+          <a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>MySQL的版本一下子跳跃这么大，用手指想就有很多新的东西了。<br>下面我们就来详细了解一下。</p>
+<a id="more"></a>
+
+<h4 id="1-秒级加列"><a href="#1-秒级加列" class="headerlink" title="1. 秒级加列"></a>1. 秒级加列</h4><ol>
+<li>分别在5.7与8.0中有一张 test 表，数据为3000w行<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment"># mysql8.0.22</span>
+mysql<span class="token operator">&gt;</span> <span class="token keyword">alter</span> <span class="token keyword">table</span> test <span class="token keyword">add</span> str <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span> <span class="token operator">not</span> <span class="token boolean">null</span> <span class="token keyword">default</span> <span class="token string">'mysql8.0 新加字段'</span><span class="token punctuation">;</span>
+Query OK<span class="token punctuation">,</span> <span class="token number">0</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">0.13</span> sec<span class="token punctuation">)</span>
+Records: <span class="token number">0</span>  Duplicates: <span class="token number">0</span>  <span class="token keyword">Warnings</span>: <span class="token number">0</span>
+
+<span class="token comment"># mysql5.7.30</span>
+mysql<span class="token operator">&gt;</span>  <span class="token keyword">alter</span> <span class="token keyword">table</span> test <span class="token keyword">add</span> str <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span> <span class="token operator">not</span> <span class="token boolean">null</span> <span class="token keyword">default</span> <span class="token string">'mysql5.7 新加字段'</span><span class="token punctuation">;</span>
+Query OK<span class="token punctuation">,</span> <span class="token number">0</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">6</span> min <span class="token number">8.36</span> sec<span class="token punctuation">)</span>
+Records: <span class="token number">0</span>  Duplicates: <span class="token number">0</span>  <span class="token keyword">Warnings</span>: <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+可以看到 8.0 只需要 0.13 秒，而 5.7 需要 6分多钟！<br>以前表加列操作需要重建表（消耗大量的IO资源和时间），8.0加列没有这个步骤。</li>
+</ol>
+<h4 id="2-性能提升"><a href="#2-性能提升" class="headerlink" title="2. 性能提升"></a>2. 性能提升</h4><p>   <img src="/images/mysql/sql8.image" alt="per"><br>   </p><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment"># mysql5.7.30</span>
+mysql<span class="token operator">&gt;</span> <span class="token keyword">select</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token keyword">from</span> test<span class="token punctuation">;</span>
+<span class="token operator">+</span><span class="token comment">----------+</span>
+<span class="token operator">|</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">----------+</span>
+<span class="token operator">|</span> <span class="token number">29991137</span> <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">----------+</span>
+<span class="token number">1</span> <span class="token keyword">row</span> <span class="token operator">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span><span class="token number">3</span> min <span class="token number">12.24</span> sec<span class="token punctuation">)</span>
+
+<span class="token comment"># mysql8.0.22</span>
+mysql<span class="token operator">&gt;</span> <span class="token keyword">select</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token keyword">from</span> test<span class="token punctuation">;</span>
+<span class="token operator">+</span><span class="token comment">----------+</span>
+<span class="token operator">|</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">----------+</span>
+<span class="token operator">|</span> <span class="token number">30000000</span> <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">----------+</span>
+<span class="token number">1</span> <span class="token keyword">row</span> <span class="token operator">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span><span class="token number">45.70</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><br>    可以看到三千万的数据量，8.0版本只需要45.70秒，而5.7版本需要3分12.24秒<br>    分别在只更新和只读场景下，8.0相比5.7在高并发时性能提升近1倍；求表总数据量8.0响应时间也将近提升5倍。<p></p>
+<h4 id="3-文档数据库"><a href="#3-文档数据库" class="headerlink" title="3. 文档数据库"></a>3. 文档数据库</h4><ul>
+<li>MySQL Document Store，NoSQL + SQL = MySQL</li>
+<li>多文档事务，ACID特性</li>
+<li>支持更新JSON中部分字段<br><img src="/images/mysql/sql8doc.image" alt="sql8doc"> </li>
+</ul>
+<h4 id="4-SQL增强"><a href="#4-SQL增强" class="headerlink" title="4. SQL增强"></a>4. SQL增强</h4><ul>
+<li><h5 id="公用表表达式（CTE）"><a href="#公用表表达式（CTE）" class="headerlink" title="公用表表达式（CTE）"></a>公用表表达式（CTE）</h5>关于CTE的详细介绍看这里 <a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/719994">https://developer.aliyun.com/article/719994</a></li>
+<li><h5 id="不可见索引（Invisible-Indexes）"><a href="#不可见索引（Invisible-Indexes）" class="headerlink" title="不可见索引（Invisible Indexes）"></a>不可见索引（Invisible Indexes）</h5>将索引置为不可见时，SQL执行时查询优化器会忽略该索引；这样有助于我们了解该索引对查询语句的影响有多大。<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 将索引置为不可见</span>
+<span class="token keyword">alter</span> <span class="token keyword">table</span> test <span class="token keyword">alter</span> <span class="token keyword">index</span>  index_name invisible<span class="token punctuation">;</span>
+<span class="token comment">-- 置为可见</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> visible<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li><h5 id="降序索引（Descending-Indexes）"><a href="#降序索引（Descending-Indexes）" class="headerlink" title="降序索引（Descending Indexes）"></a>降序索引（Descending Indexes）</h5>在5.7的时候只支持升序索引，就算显式指定为降序，创建的还是升序。<br>具体例子 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/ivictor/p/9072361.html">降序索引详解</a></li>
+<li><h5 id="函数索引（Functional-Indexes）"><a href="#函数索引（Functional-Indexes）" class="headerlink" title="函数索引（Functional Indexes）"></a>函数索引（Functional Indexes）</h5>在之前的版本中我们知道，凡是涉及到计算以及函数的都无法使用索引。 那么现在这已经是过去式了<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> test <span class="token keyword">where</span> <span class="token keyword">year</span><span class="token punctuation">(</span>date_<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">2020</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+而且函数索引可以和普通索引组合为联合索引，就像普通索引与普通索引组合那样，相同的方法</li>
+</ul>
+<h4 id="5-默认字符集utf8mb4"><a href="#5-默认字符集utf8mb4" class="headerlink" title="5. 默认字符集utf8mb4"></a>5. 默认字符集utf8mb4</h4>  <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql root<span class="token variable">@localhost</span>:<span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token operator">&gt;</span> <span class="token keyword">show</span> variables <span class="token operator">like</span> <span class="token string">'%character%'</span><span class="token punctuation">;</span>
+<span class="token operator">+</span><span class="token comment">--------------------------+--------------------------------+</span>
+<span class="token operator">|</span> Variable_name            <span class="token operator">|</span> <span class="token keyword">Value</span>                          <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">--------------------------+--------------------------------+</span>
+<span class="token operator">|</span> character_set_client     <span class="token operator">|</span> utf8                           <span class="token operator">|</span>
+<span class="token operator">|</span> character_set_connection <span class="token operator">|</span> utf8                           <span class="token operator">|</span>
+<span class="token operator">|</span> character_set_database   <span class="token operator">|</span> utf8mb4                        <span class="token operator">|</span>
+<span class="token operator">|</span> character_set_filesystem <span class="token operator">|</span> <span class="token keyword">binary</span>                         <span class="token operator">|</span>
+<span class="token operator">|</span> character_set_results    <span class="token operator">|</span> utf8                           <span class="token operator">|</span>
+<span class="token operator">|</span> character_set_server     <span class="token operator">|</span> utf8mb4                        <span class="token operator">|</span>
+<span class="token operator">|</span> character_set_system     <span class="token operator">|</span> utf8                           <span class="token operator">|</span>
+<span class="token operator">|</span> character_sets_dir       <span class="token operator">|</span> <span class="token operator">/</span>usr<span class="token operator">/</span><span class="token keyword">share</span><span class="token operator">/</span>mysql<span class="token operator">-</span><span class="token number">8.0</span><span class="token operator">/</span>charsets<span class="token operator">/</span> <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">--------------------------+--------------------------------+</span>
+<span class="token number">8</span> <span class="token keyword">rows</span> <span class="token operator">in</span> <span class="token keyword">set</span>
+<span class="token keyword">Time</span>: <span class="token number">0.028</span>s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>可以更好的存储emojis</li>
+<li>可变长度编码字符的性能提升<br><img src="/images/mysql/sql8char.image" alt="char"></li>
+</ul>
+<h4 id="6-一致性查询改进"><a href="#6-一致性查询改进" class="headerlink" title="6. 一致性查询改进"></a>6. 一致性查询改进</h4><ul>
+<li><p>SKIP LOCKED<br>需要加锁的记录若被其它线程占有锁，则跳过，而不是等待</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> test <span class="token keyword">where</span> age<span class="token operator">=</span><span class="token number">12</span> <span class="token keyword">for</span> <span class="token keyword">update</span> skip locked<span class="token punctuation">;</span>
+Empty <span class="token keyword">set</span> <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</li>
+<li><p>NOWAIT<br>需要加锁的记录如果有锁，则会报错</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> test <span class="token keyword">where</span> age<span class="token operator">=</span><span class="token number">12</span> <span class="token keyword">for</span> <span class="token keyword">update</span> nowait<span class="token punctuation">;</span>
+ERROR <span class="token number">3572</span> <span class="token punctuation">(</span>HY000<span class="token punctuation">)</span>: Statement aborted because <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> could <span class="token operator">not</span> be acquired immediately <span class="token operator">and</span> NOWAIT <span class="token operator">is</span> <span class="token keyword">set</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>这两个特性某种意义上替代了redis的作用。</p>
+</li>
+</ul>
+<h4 id="7-资源组"><a href="#7-资源组" class="headerlink" title="7. 资源组"></a>7. 资源组</h4><ul>
+<li>线程赋给不同的资源组</li>
+<li>资源组和不同的内存、IO、CPU(现仅支持)进行关联<br><img src="/images/mysql/sql8source.image" alt="source"></li>
+</ul>
+<h4 id="8-新的数据字典"><a href="#8-新的数据字典" class="headerlink" title="8. 新的数据字典"></a>8. 新的数据字典</h4><ul>
+<li>基于innodb的库表元数据信息</li>
+<li>增强了MySQL crash-safe能力</li>
+<li>原子DDL（ Atomic DDLs ）<br><img src="/images/mysql/sql8dict.image" alt="dict"><br>以前版本MySQL数据字典存放在多个地方，一机器多实例时存在大量文件描述符性能消耗。</li>
+</ul>
+<p>  8.0版本都存放在事务性InnoDB表，MySQL异常挂掉后也不会再出现表损坏情况；DDL操作失败也不会再留下占空间的<code>临时文件</code></p>
+<h4 id="9-MGR-增强"><a href="#9-MGR-增强" class="headerlink" title="9. MGR 增强"></a>9. MGR 增强</h4><ul>
+<li>金融级别99.999%官方高可用方案</li>
+<li>MGR是业务多活(应用多活+数据库多活)的终极方案</li>
+<li>多个MySQL组成一个group，数据写group</li>
+<li>线上10套多主8.0 MGR集群<br><img src="/images/mysql/sql8mgr.image" alt="mgr"><br>MGR的增强大大提升了在网络异常(机房级故障)下的健壮、稳定性</li>
+</ul>
+<h4 id="10-安全性增强"><a href="#10-安全性增强" class="headerlink" title="10. 安全性增强"></a>10. 安全性增强</h4>  <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># SQL角色</span>
+SQL Roles      
+<span class="token comment"># 原子ACL语句</span>
+Atomic ACL Statements       
+<span class="token comment"># 动态特权</span>
+Dynamic Privileges          
+<span class="token comment"># 防止暴力攻击</span>
+Protection Against Brute Force Attacks     
+<span class="token comment"># REDO &amp; UNDO Logs加密</span>
+REDO <span class="token operator">&amp;</span> UNDO Logs Encryption        
+<span class="token comment"># 缓存Sa2认证插件</span>
+Caching sha2 authentication plugin     
+<span class="token comment"># 密码轮询策略</span>
+Password Rotation Policy        <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="11-复制增强"><a href="#11-复制增强" class="headerlink" title="11. 复制增强"></a>11. 复制增强</h4>  <pre class="line-numbers language-py" data-language="py"><code class="language-py"><span class="token comment"># binlog中额外的Metadata</span>
+Additional Metadata <span class="token keyword">in</span> the binary log      
+
+<span class="token comment"># 高效的json复制 </span>
+Efficient JSON Replication 
+
+<span class="token comment"># 监控复制延迟细到毫秒</span>
+Monitor Replication Lag <span class="token keyword">with</span> Microsecond Precision 
+
+<span class="token comment"># 组复制更多的P_S</span>
+More P_S Instrumentation <span class="token keyword">for</span> Group Replication 
+
+<span class="token comment"># 默认启动了binlog</span>
+Enable binary log by default   
+
+<span class="token comment"># 基于Writeset-based Dependency Tracking的并行应用</span>
+Improving the Parallel Applier <span class="token keyword">with</span> Writeset<span class="token operator">-</span>based Dependency Tracking 
+
+<span class="token comment"># 组复制白名单中支持主机名</span>
+Hostname support <span class="token keyword">in</span> Group Replication Whitelist    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="12-实例克隆"><a href="#12-实例克隆" class="headerlink" title="12. 实例克隆"></a>12. 实例克隆</h4><ul>
+<li>以前都是要备份恢复，再加入主从复制</li>
+<li>现在可以在原目标实例上直接安装克隆插件 授权进行克隆</li>
+</ul>
+<h4 id="13-全局变量持久化"><a href="#13-全局变量持久化" class="headerlink" title="13. 全局变量持久化"></a>13. 全局变量持久化</h4><p>  以前我们在客户端执行MySQL配置，都是暂时性的，MySQL重启后就会失效。想永久设置只能修改配置文件。8.0版本直接通过SQL命令，就可以直接永久配置。</p>
+<ul>
+<li><code>set persist</code><br>会在设置当前全局变量的前提下，将其保存到 mysqld-auto.cnf 文件中，这个命令需要有这个权限：system_variables_admin，才能执行</li>
+<li><code>set persist_only</code><br>只会将其保存到 mysqld-auto.cnf 文件中，而不会设置当前全局变量，这对只读全局变量有用，这个命令需要有这个权限：persist_ro_variables_admin，才能执行</li>
+</ul>
+<h4 id="14-其他"><a href="#14-其他" class="headerlink" title="14. 其他"></a>14. 其他</h4><ul>
+<li>优化器直方图</li>
+<li>自增主键持久化</li>
+<li>移除Query Cache</li>
+<li>GIS增强</li>
+<li>备份锁</li>
+<li>group by 不再隐式排序</li>
+<li>redo_log优化、多线程并发写log buffer</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>人生苦短我用Python,Golang,Rust</div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechat.jpeg" alt="Rumple 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/zfb.jpeg" alt="Rumple 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Rumple
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://wuruipeng404.github.io/ckiye7cmp001sx6osdvczgtfg/" title="MySQL8的新特性">https://wuruipeng404.github.io/ckiye7cmp001sx6osdvczgtfg/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/mysql/" rel="tag"><i class="fa fa-tag"></i> mysql</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/ckiye7cmb000tx6os9zn3fwmr/" rel="prev" title="讲明白倒排索引">
+                  <i class="fa fa-chevron-left"></i> 讲明白倒排索引
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/ckiye7cm7000jx6os40svd35d/" rel="next" title="数据结构之线性与非线性">
+                  数据结构之线性与非线性 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  © 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rumple</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  <script async="" src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/bundle.js"></script><script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  ;
+
+NexT.utils.loadComments('#gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'f69af37424dec003dd80',
+      clientSecret: 'cf2dd6f7c02d71b7529a35bad785e0f6c403d9a7',
+      repo        : 'hexo-comments',
+      owner       : 'wuruipeng404',
+      admin       : ['wuruipeng404'],
+      id          : '4a8df5c42880a72c3d48ddc33ec9a435',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script></body></html>

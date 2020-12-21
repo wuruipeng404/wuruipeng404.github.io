@@ -1,0 +1,558 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+
+
+
+
+
+  
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="作为一名开发，查询过滤日志去debug 应该是基本功中的基本功了。今天详细介绍一下这些命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="查看日志相关的命令">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckiye7cmm001ix6os5yesdgik/index.html">
+<meta property="og:site_name" content="Rumplestiltskin's Home">
+<meta property="og:description" content="作为一名开发，查询过滤日志去debug 应该是基本功中的基本功了。今天详细介绍一下这些命令">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-18T07:38:28.000Z">
+<meta property="article:modified_time" content="2020-11-18T08:00:37.731Z">
+<meta property="article:author" content="Rumple">
+<meta property="article:tag" content="head">
+<meta property="article:tag" content="grep">
+<meta property="article:tag" content="tail">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://wuruipeng404.github.io/ckiye7cmm001ix6os5yesdgik/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>查看日志相关的命令 | Rumplestiltskin's Home</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css');loadCss('//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css');loadCss('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css"></noscript></head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Rumplestiltskin's Home</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life Long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-head"><span class="nav-number">1.</span> <span class="nav-text">1. head</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-tail"><span class="nav-number">2.</span> <span class="nav-text">2. tail</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-grep"><span class="nav-number">3.</span> <span class="nav-text">3. grep</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Example"><span class="nav-number">4.</span> <span class="nav-text">4.Example</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Rumple" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Rumple</p>
+  <div class="site-description" itemprop="description">后端 架构 容器</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wuruipeng404" title="GitHub → https://github.com/wuruipeng404" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wrp357711589@163.com" title="E-Mail → mailto:wrp357711589@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckiye7cmm001ix6os5yesdgik/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Rumple">
+      <meta itemprop="description" content="后端 架构 容器">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rumplestiltskin's Home">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          查看日志相关的命令
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-11-18 15:38:28 / 修改时间：16:00:37" itemprop="dateCreated datePublished" datetime="2020-11-18T15:38:28+08:00">2020-11-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">操作指南</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>作为一名开发，查询过滤日志去debug 应该是基本功中的基本功了。今天详细介绍一下这些命令</p>
+<a id="more"></a>
+
+<h3 id="1-head"><a href="#1-head" class="headerlink" title="1. head"></a>1. head</h3><p>  <code>head</code> 与 <code>tail</code> 是一对命令，从字面意思也可以看出其作用<br>  <code>head</code> 是用来查看头部的内容，<code>tail</code> 用来查看尾部的内容<br>  参数：<br>    - <code>-q</code> 隐藏文件名<br>    - <code>-v</code> 显示文件名<br>    - <code>-c &lt;字节&gt;</code> 显示字节数<br>    - <code>-n &lt;行数&gt;</code> 显示行数</p>
+<h3 id="2-tail"><a href="#2-tail" class="headerlink" title="2. tail"></a>2. tail</h3><p>  这个相较与 <code>head</code> 就用的比较多了<br>  参数：</p>
+<ul>
+<li><code>-f</code> 循环读取</li>
+<li><code>-q</code> 不显示处理信息</li>
+<li><code>-v</code> 显示详细的处理信息</li>
+<li><code>-c&lt;数目&gt;</code> 显示的字节数</li>
+<li><code>-n&lt;行数&gt;</code> 显示文件的尾部 n 行内容</li>
+<li><code>--pid=PID</code>与<code>-f</code>合用,表示在进程ID,PID死掉之后结束</li>
+<li><code>-q, --quiet, --silent</code> 从不输出给出文件名的首部</li>
+<li><code>-s, --sleep-interval=S</code> 与-f合用,表示在每次反复的间隔休眠S秒 </li>
+</ul>
+<h3 id="3-grep"><a href="#3-grep" class="headerlink" title="3. grep"></a>3. grep</h3><p>  grep用来过滤输出<br>  参数：</p>
+<ul>
+<li><code>-a,--text</code> 不忽略二进制的数据。</li>
+<li><code>-A&lt;显示行数&gt;,--after-context=&lt;显示行数&gt;</code> 显示匹配值之后的n行内容</li>
+<li><code>-b,--byte-offset</code> 标示出该行第一个字符的编号。</li>
+<li><code>-B&lt;显示行数&gt;,--before-context=&lt;显示行数&gt;</code> 显示匹配值之前的n行内容</li>
+<li><code>-c,--count</code> 计算符合样式的列数。</li>
+<li><code>-C&lt;显示行数&gt;,--context=&lt;显示行数&gt;或-&lt;显示行数&gt;</code> 除了显示符合样式的那一行之外，并显示该行之前后的内容。</li>
+<li>-d &lt;动作&gt;,–directories=&lt;动作&gt;` 当指定要查找的是目录而非文件时，必须使用这项参数，否则grep指令将回报信息并停止动作。</li>
+<li><code>-e&lt;范本样式&gt;,--regexp=&lt;范本样式&gt;</code> 指定字符串做为查找文件内容的样式。</li>
+<li><code>-E,--extended-regexp</code> 将样式为延伸的正则表达式来使用。</li>
+<li><code>-f&lt;规则文件&gt;,--file=&lt;规则文件&gt;</code> 指定规则文件，其内容含有一个或多个规则样式，让grep查找符合规则条件的文件内容，格式为每行一个规则样式。</li>
+<li><code>-F,--fixed-regexp</code> 将样式视为固定字符串的列表。</li>
+<li><code>-G,--basic-regexp</code> 将样式视为普通的表示法来使用。</li>
+<li><code>-h,--no-filename</code> 在显示符合样式的那一行之前，不标示该行所属的文件名称。</li>
+<li><code>-H,--with-filename</code> 在显示符合样式的那一行之前，表示该行所属的文件名称。</li>
+<li><code>-i,--ignore-case</code> 忽略字符大小写的差别。</li>
+<li><code>-l,--file-with-matches</code> 列出文件内容符合指定的样式的文件名称。</li>
+<li><code>-L,--files-without-match</code> 列出文件内容不符合指定的样式的文件名称。</li>
+<li><code>-n,--line-number</code> 在显示符合样式的那一行之前，标示出该行的列数编号。</li>
+<li><code>-o,--only-matching</code> 只显示匹配PATTERN 部分。</li>
+<li><code>-q,--quiet或--silent</code> 不显示任何信息。</li>
+<li><code>-r,--recursive</code> 此参数的效果和指定”-d recurse”参数相同。</li>
+<li><code>-s,--no-messages</code> 不显示错误信息。</li>
+<li><code>-v,--revert-match</code> 显示不包含匹配文本的所有行。</li>
+<li><code>-V,--version</code> 显示版本信息。</li>
+<li><code>-w,--word-regexp</code> 只显示全字符合的列。</li>
+<li><code>-x,--line-regexp</code> 只显示全列符合的列。</li>
+<li><code>-y</code> 此参数的效果和指定”-i”参数相同。</li>
+<li><code>-m</code> 匹配多少次</li>
+</ul>
+<h3 id="4-Example"><a href="#4-Example" class="headerlink" title="4.Example"></a>4.Example</h3><ul>
+<li>持续输出最新的 50 行日志<pre><code class="bash">tail -f -n 20 file.log </code></pre>
+</li>
+<li>持续输出最新 50 行日志中匹配 关键字<code>ss</code>的行<pre><code class="bash">tail -f -n 50 file.log | grep "ss"</code></pre>
+</li>
+<li>持续输出最新 50 行日志中匹配 关键字<code>ss</code>的行 只匹配3次<pre><code class="bash">tail -f -n 50 file.log | grep -m 3 "ss"</code></pre>
+</li>
+<li>持续输出最新 50 行日志中匹配 关键字<code>ss</code>的行 只匹配3次,并显示匹配项前后3行的内容<pre><code class="bash">tail -f -n 50 file.log | grep -3 -m 3 "ss"</code></pre>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>人生苦短我用Python,Golang,Rust</div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechat.jpeg" alt="Rumple 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/zfb.jpeg" alt="Rumple 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Rumple
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://wuruipeng404.github.io/ckiye7cmm001ix6os5yesdgik/" title="查看日志相关的命令">https://wuruipeng404.github.io/ckiye7cmm001ix6os5yesdgik/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/head/" rel="tag"><i class="fa fa-tag"></i> head</a>
+              <a href="/tags/grep/" rel="tag"><i class="fa fa-tag"></i> grep</a>
+              <a href="/tags/tail/" rel="tag"><i class="fa fa-tag"></i> tail</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/ckiye7cmp001vx6os8lgac6hh/" rel="prev" title="MySQL之MVCC">
+                  <i class="fa fa-chevron-left"></i> MySQL之MVCC
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/ckiye7cmg0014x6os8dxb7phl/" rel="next" title="关于Golang高并发高效率代码的一些实践">
+                  关于Golang高并发高效率代码的一些实践 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  © 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rumple</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  <script async="" src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/bundle.js"></script><script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  ;
+
+NexT.utils.loadComments('#gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'f69af37424dec003dd80',
+      clientSecret: 'cf2dd6f7c02d71b7529a35bad785e0f6c403d9a7',
+      repo        : 'hexo-comments',
+      owner       : 'wuruipeng404',
+      admin       : ['wuruipeng404'],
+      id          : 'c5f8d6ef45648b81c9a15055034c83ee',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script></body></html>
