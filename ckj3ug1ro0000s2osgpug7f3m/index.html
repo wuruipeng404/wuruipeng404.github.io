@@ -1,0 +1,728 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+
+
+
+
+
+  
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="K8S共享存储介绍 K8S 对于有状态的容器应用 或者 需要数据持久化的数据应用，不仅需要将容器内的目录挂载到宿主机的目录或者emptyDir临时存储卷，而且需要更加可靠的存储来保存应用产生的重要数据，以便容器应用在重建之后仍然可以使用之前的数据。 为了方便使用和管理，K8S实现了三种抽象资源，PersistentVolume（PV）和 PersistentVolumeClaim（PVC）以及 S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="k8s之共享存储(GlusterFS)(三)">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckj3ug1ro0000s2osgpug7f3m/index.html">
+<meta property="og:site_name" content="Rumplestiltskin's Home">
+<meta property="og:description" content="K8S共享存储介绍 K8S 对于有状态的容器应用 或者 需要数据持久化的数据应用，不仅需要将容器内的目录挂载到宿主机的目录或者emptyDir临时存储卷，而且需要更加可靠的存储来保存应用产生的重要数据，以便容器应用在重建之后仍然可以使用之前的数据。 为了方便使用和管理，K8S实现了三种抽象资源，PersistentVolume（PV）和 PersistentVolumeClaim（PVC）以及 S">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-25T05:26:26.000Z">
+<meta property="article:modified_time" content="2020-12-25T06:30:46.527Z">
+<meta property="article:author" content="Rumple">
+<meta property="article:tag" content="k8s">
+<meta property="article:tag" content="GlusterFS">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://wuruipeng404.github.io/ckj3ug1ro0000s2osgpug7f3m/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>k8s之共享存储(GlusterFS)(三) | Rumplestiltskin's Home</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css');loadCss('//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css');loadCss('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css"></noscript></head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Rumplestiltskin's Home</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life Long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#K8S%E5%85%B1%E4%BA%AB%E5%AD%98%E5%82%A8%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">K8S共享存储介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GlusterFS%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">GlusterFS简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">环境搭建</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Rumple" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Rumple</p>
+  <div class="site-description" itemprop="description">后端 架构 容器</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wuruipeng404" title="GitHub → https://github.com/wuruipeng404" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wrp357711589@163.com" title="E-Mail → mailto:wrp357711589@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckj3ug1ro0000s2osgpug7f3m/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Rumple">
+      <meta itemprop="description" content="后端 架构 容器">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rumplestiltskin's Home">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          k8s之共享存储(GlusterFS)(三)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-12-25 13:26:26 / 修改时间：14:30:46" itemprop="dateCreated datePublished" datetime="2020-12-25T13:26:26+08:00">2020-12-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+          <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="K8S共享存储介绍"><a href="#K8S共享存储介绍" class="headerlink" title="K8S共享存储介绍"></a>K8S共享存储介绍</h3><ul>
+<li>K8S 对于有状态的容器应用 或者 需要数据持久化的数据应用，不仅需要将容器内的目录挂载到宿主机的目录或者emptyDir临时存储卷，而且需要更加可靠的存储来保存应用产生的重要数据，以便容器应用在重建之后仍然可以使用之前的数据。</li>
+<li>为了方便使用和管理，K8S实现了三种抽象资源，PersistentVolume（PV）和 PersistentVolumeClaim（PVC）以及 StorageClass,关于三者的概念解释，可以参考上一篇K8S基础概念理解。<a id="more"></a></li>
+<li>抽象的资源对象对应的其实是实际的存储服务，K8S支持非常多的存储服务，而本地最常用的 是NFS，CephFS 以及GlusterFS</li>
+</ul>
+<h3 id="GlusterFS简介"><a href="#GlusterFS简介" class="headerlink" title="GlusterFS简介"></a>GlusterFS简介</h3><p>  GlusterFS 是一个可扩展，分布式文件系统，集成来自多台服务器上的磁盘存储资源到单一全局命名空间，提供共享文件存储。<br>  特性：</p>
+<ul>
+<li>可以扩展到几PB容量</li>
+<li>支持处理数千个客户端</li>
+<li>兼容POSIX接口</li>
+<li>使用通用硬件，普通服务器即可构建</li>
+<li>能够使用支持扩展属性的文件系统，例如ext4，XFS</li>
+<li>支持工业标准的协议，例如NFS，SMB</li>
+<li>提供很多高级功能，例如副本，配额，跨地域复制，快照以及bitrot检测</li>
+<li>支持根据不同工作负载进行调优</li>
+</ul>
+<h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><ol>
+<li>首先K8S集群要先搭建好</li>
+<li>GlusterFS有两种安装方式，1 是直接安装在K8S集群中，2 是物理机部署。这里我们选择 2</li>
+<li>准备三台虚拟机，系统为centos7.x<ul>
+<li>192.168.10.21</li>
+<li>192.168.10.22</li>
+<li>192.168.10.23</li>
+</ul>
+</li>
+<li>安装，分别在每台机器执行如下命令<ol>
+<li>安装源 <code>yum -y install centos-release-gluster</code></li>
+<li>安装glusterfs组件 <code>yum install -y glusterfs glusterfs-server glusterfs-fuse glusterfs-rdma glusterfs-geo-replication glusterfs-devel</code></li>
+<li>启动服务 <code>systemctl enable --now glusterd</code></li>
+</ol>
+</li>
+<li>集群配置<ol>
+<li>修改每一台机器的hosts文件<ul>
+<li>192.168.10.21<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">127.0.0.1 gfs1
+192.168.10.22 gfs2
+192.168.10.23 gfs3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
+<li>192.168.10.22<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">192.168.10.21 gfs1
+127.0.0.1 gfs2
+192.168.10.23 gfs3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
+<li>以此类推</li>
+</ul>
+</li>
+<li>添加节点，假设我们在gfs1节点操作<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">gluster peer probe gfs2
+gluster peer probe gfs3
+gluster peer status<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+</li>
+<li>volume<blockquote>
+<p>glusterfs volume 有几种模式</p>
+</blockquote>
+<ol>
+<li>DHT默认模式 </li>
+</ol>
+<ul>
+<li>也叫分布卷，将文件已hash算法随机分布到 一台服务器节点中存储。</li>
+<li>命令格式：<code>gluster volume create test-volume server1:/exp1 server2:/exp2</code></li>
+</ul>
+<ol start="2">
+<li>AFR复制模式 </li>
+</ol>
+<ul>
+<li>创建volume 时带 replica x 数量: 将文件复制到 replica x 个节点中。</li>
+<li>命令格式：<code>gluster volume create test-volume replica 2 transport tcp server1:/exp1 server2:/exp2</code></li>
+</ul>
+<ol start="3">
+<li>Striped条带模式</li>
+</ol>
+<ul>
+<li>创建volume 时带 stripe x 数量： 将文件切割成数据块，分别存储到 stripe x 个节点中 ( 类似raid 0 )。</li>
+<li>命令格式：<code>gluster volume create test-volume stripe 2 transport tcp server1:/exp1 server2:/exp2</code></li>
+</ul>
+<ol start="4">
+<li>分布式条带模式（组合型） </li>
+</ol>
+<ul>
+<li>最少需要4台服务器才能创建。 创建volume 时 stripe 2 server = 4 个节点： 是DHT 与 Striped 的组合型。</li>
+<li>命令格式：<code>gluster volume create test-volume stripe 2 transport tcp server1:/exp1 server2:/exp2 server3:/exp3 server4:/exp4</code></li>
+</ul>
+<ol start="5">
+<li>分布式复制模式（组合型）</li>
+</ol>
+<ul>
+<li>最少需要4台服务器才能创建。 创建volume 时 replica 2 server = 4 个节点：是DHT 与 AFR 的组合型。</li>
+<li>命令格式：<code>gluster volume create test-volume replica 2 transport tcp server1:/exp1 server2:/exp2　server3:/exp3 server4:/exp4</code> </li>
+</ul>
+<ol start="6">
+<li>条带复制卷模式（组合型）</li>
+</ol>
+<ul>
+<li>最少需要4台服务器才能创建。 创建volume 时 stripe 2 replica 2 server = 4 个节点： 是 Striped 与 AFR 的组合型。</li>
+<li>命令格式：<code>gluster volume create test-volume stripe 2 replica 2 transport tcp server1:/exp1 server2:/exp2 server3:/exp3 server4:/exp4</code></li>
+</ul>
+<ol start="7">
+<li>三种混合模式</li>
+</ol>
+<ul>
+<li>至少需要8台 服务器才能创建。 stripe 2 replica 2 , 每4个节点 组成一个 组。</li>
+<li>命令格式：<code>gluster volume create test-volume stripe 2 replica 2 transport tcp server1:/exp1 server2:/exp2 server3:/exp3 server4:/exp4 server5:/exp5 server6:/exp6 server7:/exp7 server8:/exp8</code>   </li>
+</ul>
+</li>
+<li>创建volume进行测试<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">gluster volume create k8s-volume gfs1:/app/tv gfs2:/app/tv gfs3:/app/tv
+
+# 查看volume状态
+gluster volume info
+
+# 启动volume
+gluster volume start k8s-volume<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>GlusterFS性能调整选项<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"># 开启 指定 volume 的配额
+gluster volume quota k8s-volume enable
+
+# 限制 指定 volume 的配额
+gluster volume quota k8s-volume limit-usage / 1TB
+
+# 设置 cache 大小, 默认32MB
+gluster volume set k8s-volume performance.cache-size 4GB
+
+# 设置 io 线程, 太大会导致进程崩溃
+gluster volume set k8s-volume performance.io-thread-count 16
+
+# 设置 网络检测时间, 默认42s
+gluster volume set k8s-volume network.ping-timeout 10
+
+# 设置 写缓冲区的大小, 默认1M
+gluster volume set k8s-volume performance.write-behind-window-size 1024MB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>搭建私有镜像仓库，使用volume<ol>
+<li>首先要创建gluster相关服务<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">kind</span><span class="token punctuation">:</span> Endpoints
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> glusterfs<span class="token punctuation">-</span>cluster
+<span class="token key atrule">subsets</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">addresses</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">ip</span><span class="token punctuation">:</span> 192.168.10.21
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">24007</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">addresses</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">ip</span><span class="token punctuation">:</span> 192.168.10.22
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">24007</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">addresses</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">ip</span><span class="token punctuation">:</span> 192.168.10.23
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">24007</span>
+
+<span class="token punctuation">---</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Service
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> glusterfs<span class="token punctuation">-</span>cluster
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">34007</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>正式使用 <pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> PersistentVolume
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> registry<span class="token punctuation">-</span>pv
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> registry
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">capacity</span><span class="token punctuation">:</span>
+    <span class="token key atrule">storage</span><span class="token punctuation">:</span> 20Gi
+  <span class="token key atrule">accessModes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> ReadWriteOnce
+  <span class="token key atrule">persistentVolumeReclaimPolicy</span><span class="token punctuation">:</span> Retain
+
+  <span class="token key atrule">glusterfs</span><span class="token punctuation">:</span>
+    <span class="token key atrule">endpoints</span><span class="token punctuation">:</span> glusterfs<span class="token punctuation">-</span>cluster
+    <span class="token key atrule">path</span><span class="token punctuation">:</span> k8s<span class="token punctuation">-</span>volume
+    <span class="token key atrule">readOnly</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+<span class="token punctuation">---</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> PersistentVolumeClaim
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> registry<span class="token punctuation">-</span>pvc
+
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">accessModes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> ReadWriteOnce
+  <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+    <span class="token key atrule">requests</span><span class="token punctuation">:</span>
+      <span class="token key atrule">storage</span><span class="token punctuation">:</span> 20Gi
+  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
+    <span class="token key atrule">matchLabels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">name</span><span class="token punctuation">:</span> registry
+<span class="token punctuation">---</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> ReplicationController
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> registry
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> registry
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">replicas</span><span class="token punctuation">:</span> <span class="token number">1</span>
+  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> registry
+  <span class="token key atrule">template</span><span class="token punctuation">:</span>
+    <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+      <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+        <span class="token key atrule">name</span><span class="token punctuation">:</span> registry
+    <span class="token key atrule">spec</span><span class="token punctuation">:</span>
+      <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> registry
+          <span class="token key atrule">image</span><span class="token punctuation">:</span> registry
+          <span class="token key atrule">imagePullPolicy</span><span class="token punctuation">:</span> IfNotPresent
+          <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">5000</span>
+          <span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> /var/lib/registry
+              <span class="token key atrule">name</span><span class="token punctuation">:</span> registry<span class="token punctuation">-</span>data
+
+      <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> registry<span class="token punctuation">-</span>data
+          <span class="token key atrule">persistentVolumeClaim</span><span class="token punctuation">:</span>
+            <span class="token key atrule">claimName</span><span class="token punctuation">:</span> registry<span class="token punctuation">-</span>pvc
+<span class="token punctuation">---</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Service
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> registry
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> registry
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">type</span><span class="token punctuation">:</span> NodePort
+  <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">5000</span>
+      <span class="token key atrule">nodePort</span><span class="token punctuation">:</span> <span class="token number">30003</span>
+  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> registry<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ol>
+</li>
+<li>done</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>人生苦短我用Python,Golang,Rust</div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechat.jpeg" alt="Rumple 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/zfb.jpeg" alt="Rumple 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Rumple
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://wuruipeng404.github.io/ckj3ug1ro0000s2osgpug7f3m/" title="k8s之共享存储(GlusterFS)(三)">https://wuruipeng404.github.io/ckj3ug1ro0000s2osgpug7f3m/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/k8s/" rel="tag"><i class="fa fa-tag"></i> k8s</a>
+              <a href="/tags/GlusterFS/" rel="tag"><i class="fa fa-tag"></i> GlusterFS</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/ckiye7cmo001ox6osgnlngqsc/" rel="prev" title="k8s之基础概念理解(二)">
+                  <i class="fa fa-chevron-left"></i> k8s之基础概念理解(二)
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  © 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rumple</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  <script async="" src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/bundle.js"></script><script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  ;
+
+NexT.utils.loadComments('#gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'f69af37424dec003dd80',
+      clientSecret: 'cf2dd6f7c02d71b7529a35bad785e0f6c403d9a7',
+      repo        : 'hexo-comments',
+      owner       : 'wuruipeng404',
+      admin       : ['wuruipeng404'],
+      id          : '111bfad3461b6e1500a48864d558aac2',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script></body></html>
