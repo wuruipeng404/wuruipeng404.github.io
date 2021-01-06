@@ -1,0 +1,559 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+
+
+
+
+
+  
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","images":"/images","scheme":"Mist","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="flag:从今天开始，我将更新K8S系列博文，从环境搭建，到K8S概念的详解，到在k8s上部署完整项目，乃至有可能对K8S的二次开发。未来可期">
+<meta property="og:type" content="article">
+<meta property="og:title" content="k8s之搭建环境(一)">
+<meta property="og:url" content="https://wuruipeng404.github.io/ckjl7zmwh001788os4rpq5n1l/index.html">
+<meta property="og:site_name" content="Rumplestiltskin's Home">
+<meta property="og:description" content="flag:从今天开始，我将更新K8S系列博文，从环境搭建，到K8S概念的详解，到在k8s上部署完整项目，乃至有可能对K8S的二次开发。未来可期">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wuruipeng404.github.io/images/k8s/dockerconfig.png">
+<meta property="og:image" content="https://wuruipeng404.github.io/images/k8s/startk8s.png">
+<meta property="article:published_time" content="2020-11-27T05:18:17.000Z">
+<meta property="article:modified_time" content="2020-12-25T05:25:42.474Z">
+<meta property="article:author" content="Rumple">
+<meta property="article:tag" content="k8s">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wuruipeng404.github.io/images/k8s/dockerconfig.png">
+
+
+<link rel="canonical" href="https://wuruipeng404.github.io/ckjl7zmwh001788os4rpq5n1l/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>k8s之搭建环境(一) | Rumplestiltskin's Home</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css');loadCss('//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css');loadCss('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css"></noscript></head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Rumplestiltskin's Home</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life Long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MAC"><span class="nav-number">1.</span> <span class="nav-text">MAC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85docker-desktop%EF%BC%8C%E8%BF%99%E4%B8%AA%E6%B2%A1%E4%BB%80%E4%B9%88%E5%A5%BD%E8%AF%B4%E7%9A%84"><span class="nav-number">1.1.</span> <span class="nav-text">1. 安装docker-desktop，这个没什么好说的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%85%8D%E7%BD%AE%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E6%BA%90%E8%BF%9B%E8%A1%8C%E5%8A%A0%E9%80%9F"><span class="nav-number">1.2.</span> <span class="nav-text">2. 配置镜像仓库源进行加速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%8B%89%E5%8F%96K8S%E9%95%9C%E5%83%8F"><span class="nav-number">1.3.</span> <span class="nav-text">3. 拉取K8S镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E9%85%8D%E7%BD%AEDaskboard"><span class="nav-number">1.4.</span> <span class="nav-text">4. 配置Daskboard</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows-TODO"><span class="nav-number">2.</span> <span class="nav-text">Windows (TODO)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux"><span class="nav-number">3.</span> <span class="nav-text">Linux</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Rumple" src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Rumple</p>
+  <div class="site-description" itemprop="description">后端 架构 容器</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wuruipeng404" title="GitHub → https://github.com/wuruipeng404" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wrp357711589@163.com" title="E-Mail → mailto:wrp357711589@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl7zmwh001788os4rpq5n1l/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Rumple">
+      <meta itemprop="description" content="后端 架构 容器">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rumplestiltskin's Home">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          k8s之搭建环境(一)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-11-27 13:18:17" itemprop="dateCreated datePublished" datetime="2020-11-27T13:18:17+08:00">2020-11-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-12-25 13:25:42" itemprop="dateModified" datetime="2020-12-25T13:25:42+08:00">2020-12-25</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+          <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>flag:从今天开始，我将更新K8S系列博文，从环境搭建，到K8S概念的详解，到在k8s上部署完整项目，乃至有可能对K8S的二次开发。未来可期</p>
+<a id="more"></a>
+
+<h2 id="MAC"><a href="#MAC" class="headerlink" title="MAC"></a>MAC</h2><h3 id="1-安装docker-desktop，这个没什么好说的"><a href="#1-安装docker-desktop，这个没什么好说的" class="headerlink" title="1. 安装docker-desktop，这个没什么好说的"></a>1. 安装docker-desktop，这个没什么好说的</h3><p>  <a target="_blank" rel="noopener" href="https://www.docker.com/products/docker-desktop">docker</a></p>
+<h3 id="2-配置镜像仓库源进行加速"><a href="#2-配置镜像仓库源进行加速" class="headerlink" title="2. 配置镜像仓库源进行加速"></a>2. 配置镜像仓库源进行加速</h3><p>  可以选择的源有很多</p>
+<ul>
+<li><p>docker官方 <code>https://registry.docker-cn.com</code></p>
+</li>
+<li><p>网易 <code>http://hub-mirror.c.163.com</code></p>
+</li>
+<li><p>中科大 <code>http://docker.mirrors.ustc.edu.cn</code></p>
+<p><img src="/images/k8s/dockerconfig.png" alt="docker-source"></p>
+</li>
+</ul>
+<h3 id="3-拉取K8S镜像"><a href="#3-拉取K8S镜像" class="headerlink" title="3. 拉取K8S镜像"></a>3. 拉取K8S镜像</h3><p>  众所周知，由于GFW，在不作特殊处理的情况下，K8S的镜像是拉不下来的，这里我们借用此项目来拉镜像<a target="_blank" rel="noopener" href="https://github.com/AliyunContainerService/k8s-for-docker-desktop">k8s-for-docker-desktop</a></p>
+<ol>
+<li><code>git clone https://github.com/AliyunContainerService/k8s-for-docker-desktop.git</code></li>
+<li>进入项目目录执行 <code>./load_images.sh</code> (注意确认好自己的版本)</li>
+<li>开启K8S<br><img src="/images/k8s/startk8s.png" alt="startk8s"><br>如果长时间没有成功开启，可以运行如下命令查看日志<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token assign-left variable">pred</span><span class="token operator">=</span><span class="token string">'process matches ".*(ocker|vpnkit).*"
+ || (process in {"taskgated-helper", "launchservicesd", "kernel"} &amp;&amp; eventMessage contains[c] "docker")'</span>
+ /usr/bin/log stream --style syslog --level<span class="token operator">=</span>debug --color<span class="token operator">=</span>always --predicate <span class="token string">"<span class="token variable">$pred</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
+<li>验证集群状态<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 注意如果你配置了终端代理 这里可能会有问题 可以取消，或者在命令前加入 http_proxy="" https_proxy=""</span>
+kubectl cluster-info<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="4-配置Daskboard"><a href="#4-配置Daskboard" class="headerlink" title="4. 配置Daskboard"></a>4. 配置Daskboard</h3><a target="_blank" rel="noopener" href="https://github.com/kubernetes/dashboard">K8S-DaskBoard</a></li>
+<li>安装 <code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.4/aio/deploy/recommended.yaml</code></li>
+<li>开启访问 <code>kubectl proxy</code></li>
+<li>通过 <code>http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/</code> 连接访问dashboard</li>
+<li>这里会有两种认证方式进行选择，1是token，2是配置文件.<ol>
+<li>配置访问令牌<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token assign-left variable">TOKEN</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>kubectl -n kube-system describe secret default<span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'<span class="token variable">$1</span>=="token:"{print <span class="token variable">$2</span>}'</span><span class="token variable">)</span></span>
+kubectl config set-credentials docker-for-desktop --token<span class="token operator">=</span><span class="token string">"<span class="token variable">${TOKEN}</span>"</span>
+<span class="token builtin class-name">echo</span> <span class="token variable">$TOKEN</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
+<li>将获得的token 填入认证框即可   </li>
+</ol>
+</li>
+</ol>
+<h2 id="Windows-TODO"><a href="#Windows-TODO" class="headerlink" title="Windows (TODO)"></a>Windows (TODO)</h2><h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><p>  这里我们采用Centos7</p>
+<ol>
+<li>检查内核版本 <code>uname -r</code> 需要在<em>3.10</em>以上 (Master&amp;&amp;Node)</li>
+<li>关闭防火墙 <code>systemctl disable firewalld &amp;&amp; systemctl stop firewalld</code> (Master&amp;&amp;Node)</li>
+<li>配置系统参数(Master&amp;&amp;Node)<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">yum -y <span class="token function">install</span> bridge-utils 
+modprobe bridge <span class="token operator">&amp;&amp;</span> modprobe br_netfilter
+
+<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOF<span class="token bash punctuation"> <span class="token operator">&gt;</span> /etc/sysctl.d/k8s.conf</span>
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF</span>
+sysctl --system
+
+<span class="token comment"># 禁用 selinux</span>
+setenforce <span class="token number">0</span> 
+<span class="token function">sed</span> -i <span class="token string">'s/^SELINUX=enforcing$\|^SELINUX=disabled$/SELINUX=permissive/'</span> /etc/selinux/config
+
+<span class="token comment"># 关闭swap 取消自动挂载</span>
+swapoff -a <span class="token operator">&amp;&amp;</span> <span class="token function">sed</span> -i <span class="token string">"/swap/s/^/#/"</span> /etc/fstab<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>安装kubeadm(Master&amp;&amp;Node)<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cat</span> <span class="token operator">&gt;</span> /etc/yum.repos.d/kubebrnetes.repo <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+[kubernetes]
+name=Kubernetes Respository
+baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+enabled=1
+gpgcheck=0
+EOF</span>
+
+yum clean all <span class="token operator">&amp;&amp;</span> yum makecache faster
+yum -y <span class="token function">install</span> kubelet kubeadm kubectl --disableexcludes<span class="token operator">=</span>kubernetes
+
+systemctl <span class="token builtin class-name">enable</span> --now kubelet<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>修改默认配置文件初始化集群<ul>
+<li>Master<ol>
+<li><code>kubeadm config print init-defaults &gt; init-master.yaml</code></li>
+<li>修改配置文件中的 <code>advertiseAddress</code> 为你Master的ip地址, 修改<code>imageRepository</code>镜像仓库地址，我这里用的<code>docker.io/gotok8s</code>,如果你需要用到网络插件比如flannel，还需要修改<code>podSubnet</code>为其分配一个网段，注意不要跟宿主机冲突</li>
+<li>初始化，依次执行<code>kubeadm config images pull --config=init-master.yaml</code> &amp;&amp; <code>kubeadm init --config=init-master.yaml</code></li>
+</ol>
+</li>
+<li>Node<ol>
+<li><code>kubeadm config print join-defaults &gt; init-node.yaml</code></li>
+<li>修改配置文件中<code>apiServerEndpoint</code>为你master的api服务地址，以及修改Token配置。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>安装网络插件flannel,在Master直接执行如下命令即可<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li>共享存储（这个我会单独开一篇进行讲解） </li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>人生苦短我用Python,Golang,Rust</div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechat.jpeg" alt="Rumple 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/zfb.jpeg" alt="Rumple 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Rumple
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://wuruipeng404.github.io/ckjl7zmwh001788os4rpq5n1l/" title="k8s之搭建环境(一)">https://wuruipeng404.github.io/ckjl7zmwh001788os4rpq5n1l/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/k8s/" rel="tag"><i class="fa fa-tag"></i> k8s</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/ckjl7zmwd000v88osc2gw1bo0/" rel="prev" title="关于Golang高并发高效率代码的一些实践">
+                  <i class="fa fa-chevron-left"></i> 关于Golang高并发高效率代码的一些实践
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/ckjl7zmwt001z88os6w2014nk/" rel="next" title="记一次磁盘满后引发的血案">
+                  记一次磁盘满后引发的血案 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  © 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rumple</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+  
+
+
+
+
+
+
+  
+  <script async="" src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="/bundle.js"></script><script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'f69af37424dec003dd80',
+      clientSecret: 'cf2dd6f7c02d71b7529a35bad785e0f6c403d9a7',
+      repo        : 'hexo-comments',
+      owner       : 'wuruipeng404',
+      admin       : ['wuruipeng404'],
+      id          : 'c9825bad16431c7cc37e0e95a69946ae',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
+</script></body></html>

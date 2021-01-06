@@ -2,7 +2,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.2.0">
+<meta name="generator" content="Hexo 5.3.0">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
@@ -19,7 +19,7 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","images":"/images","scheme":"Mist","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"wuruipeng404.github.io","root":"/","images":"/images","scheme":"Mist","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"width":280},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 <meta name="description" content="后端 架构 容器">
 <meta property="og:type" content="website">
@@ -47,6 +47,7 @@
 </script>
 <title>Rumplestiltskin's Home</title>
   
+
 
 
 
@@ -94,7 +95,7 @@
     <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
+    <div class="toggle" aria-label="切换导航栏" role="button">
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
@@ -121,31 +122,11 @@
 
 <nav class="site-nav">
   <ul class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
 
@@ -155,7 +136,7 @@
 </div>
         
   
-  <div class="toggle sidebar-toggle">
+  <div class="toggle sidebar-toggle" role="button">
     <span class="toggle-line"></span>
     <span class="toggle-line"></span>
     <span class="toggle-line"></span>
@@ -175,11 +156,11 @@
 
       <div class="sidebar-panel-container">
         <!--noindex-->
-        <section class="post-toc-wrap sidebar-panel">
-        </section>
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
         <!--/noindex-->
 
-        <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview-wrap sidebar-panel">
           <div class="site-author site-overview-item animated" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="Rumple" src="/images/avatar.jpeg">
   <p class="site-author-name" itemprop="name">Rumple</p>
@@ -222,7 +203,7 @@
 
 
 
-        </section>
+        </div>
       </div>
     </div>
   </aside>
@@ -232,7 +213,7 @@
     </header>
 
     
-  <div class="back-to-top">
+  <div class="back-to-top" role="button">
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
@@ -253,7 +234,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl1kyit0001s5ose1veeoo4/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl7zmwm001g88osdkr28gnv/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -266,7 +247,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/ckjl1kyit0001s5ose1veeoo4/" class="post-title-link" itemprop="url">k8s之Heketi(四)</a>
+          <a href="/ckjl7zmwm001g88osdkr28gnv/" class="post-title-link" itemprop="url">k8s之Heketi(四)</a>
         </h2>
 
         <div class="post-meta-container">
@@ -303,7 +284,7 @@
           <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>  在上一篇中，我们搭建了GlusterFS分布式存储集群。其实搭建好之后就可以创建PV以及PVC进行使用了。但是K8S更进一步的提供一个高级抽象StorageClass, 他主要的作用是对用户设置的PVC申请屏 蔽后端存储的细节，一方面减少了用户对于存储资源细节的关注，另一方面减轻了管理员手工管理PV的工作，由系统自动完成PV的创建和绑定，实现了动态的资源供应。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/ckjl1kyit0001s5ose1veeoo4/#more" rel="contents">
+              <a class="btn" href="/ckjl7zmwm001g88osdkr28gnv/#more" rel="contents">
                 阅读全文 »
               </a>
             </div>
@@ -334,7 +315,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckj3ug1ro0000s2osgpug7f3m/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl7zmwn001i88oshfjmbcf3/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -347,7 +328,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/ckj3ug1ro0000s2osgpug7f3m/" class="post-title-link" itemprop="url">k8s之共享存储(GlusterFS)(三)</a>
+          <a href="/ckjl7zmwn001i88oshfjmbcf3/" class="post-title-link" itemprop="url">k8s之共享存储(GlusterFS)(三)</a>
         </h2>
 
         <div class="post-meta-container">
@@ -365,7 +346,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-31 11:12:26" itemprop="dateModified" datetime="2020-12-31T11:12:26+08:00">2020-12-31</time>
+        <time title="修改时间：2021-01-06 14:06:44" itemprop="dateModified" datetime="2021-01-06T14:06:44+08:00">2021-01-06</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -392,7 +373,7 @@
 <li>为了方便使用和管理，K8S实现了三种抽象资源，PersistentVolume（PV）和 PersistentVolumeClaim（PVC）以及 StorageClass,关于三者的概念解释，可以参考上一篇K8S基础概念理解。</li></ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/ckj3ug1ro0000s2osgpug7f3m/#more" rel="contents">
+              <a class="btn" href="/ckjl7zmwn001i88oshfjmbcf3/#more" rel="contents">
                 阅读全文 »
               </a>
             </div>
@@ -423,7 +404,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckiye7cmo001ox6osgnlngqsc/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl7zmwk001c88osf5xhgrwz/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -436,7 +417,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/ckiye7cmo001ox6osgnlngqsc/" class="post-title-link" itemprop="url">k8s之基础概念理解(二)</a>
+          <a href="/ckjl7zmwk001c88osf5xhgrwz/" class="post-title-link" itemprop="url">k8s之基础概念理解(二)</a>
         </h2>
 
         <div class="post-meta-container">
@@ -479,7 +460,7 @@
           <h3 id="本篇主要来解释一下k8s繁多的概念"><a href="#本篇主要来解释一下k8s繁多的概念" class="headerlink" title="本篇主要来解释一下k8s繁多的概念"></a>本篇主要来解释一下k8s繁多的概念</h3><p>  我觉得吧第一遍不用一定要全部理解，先大致过一下，以后会慢慢熟悉<br>  K8S中的概念按我的理解把他分为这样两类：<br>  <em>架构类</em>：所谓架构类，就是指K8S自身部署，调度，的一些组件和概念<br>  <em>服务类</em>：就是针对我们自己的服务调度，部署，控制，所用到的概念</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/ckiye7cmo001ox6osgnlngqsc/#more" rel="contents">
+              <a class="btn" href="/ckjl7zmwk001c88osf5xhgrwz/#more" rel="contents">
                 阅读全文 »
               </a>
             </div>
@@ -510,7 +491,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckiye7cmu002cx6os9od34re9/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl7zmwt001z88os6w2014nk/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -523,7 +504,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/ckiye7cmu002cx6os9od34re9/" class="post-title-link" itemprop="url">记一次磁盘满后引发的血案</a>
+          <a href="/ckjl7zmwt001z88os6w2014nk/" class="post-title-link" itemprop="url">记一次磁盘满后引发的血案</a>
         </h2>
 
         <div class="post-meta-container">
@@ -566,7 +547,7 @@
 </ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/ckiye7cmu002cx6os9od34re9/#more" rel="contents">
+              <a class="btn" href="/ckjl7zmwt001z88os6w2014nk/#more" rel="contents">
                 阅读全文 »
               </a>
             </div>
@@ -597,7 +578,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckiye7cmn001nx6osgy2u5sau/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl7zmwh001788os4rpq5n1l/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -610,7 +591,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/ckiye7cmn001nx6osgy2u5sau/" class="post-title-link" itemprop="url">k8s之搭建环境(一)</a>
+          <a href="/ckjl7zmwh001788os4rpq5n1l/" class="post-title-link" itemprop="url">k8s之搭建环境(一)</a>
         </h2>
 
         <div class="post-meta-container">
@@ -653,7 +634,7 @@
           <p>flag:从今天开始，我将更新K8S系列博文，从环境搭建，到K8S概念的详解，到在k8s上部署完整项目，乃至有可能对K8S的二次开发。未来可期</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/ckiye7cmn001nx6osgy2u5sau/#more" rel="contents">
+              <a class="btn" href="/ckjl7zmwh001788os4rpq5n1l/#more" rel="contents">
                 阅读全文 »
               </a>
             </div>
@@ -684,7 +665,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckiye7cmg0014x6os8dxb7phl/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl7zmwd000v88osc2gw1bo0/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -697,7 +678,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/ckiye7cmg0014x6os8dxb7phl/" class="post-title-link" itemprop="url">关于Golang高并发高效率代码的一些实践</a>
+          <a href="/ckjl7zmwd000v88osc2gw1bo0/" class="post-title-link" itemprop="url">关于Golang高并发高效率代码的一些实践</a>
         </h2>
 
         <div class="post-meta-container">
@@ -745,7 +726,7 @@
 <li>channel 是一个并发安全的FIFO队列，用于协程之间的通信。</li></ul></li></ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/ckiye7cmg0014x6os8dxb7phl/#more" rel="contents">
+              <a class="btn" href="/ckjl7zmwd000v88osc2gw1bo0/#more" rel="contents">
                 阅读全文 »
               </a>
             </div>
@@ -776,7 +757,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckiye7cmm001ix6os5yesdgik/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl7zmx1002i88os6oii90us/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -789,7 +770,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/ckiye7cmm001ix6os5yesdgik/" class="post-title-link" itemprop="url">查看日志相关的命令</a>
+          <a href="/ckjl7zmx1002i88os6oii90us/" class="post-title-link" itemprop="url">查看日志相关的命令</a>
         </h2>
 
         <div class="post-meta-container">
@@ -826,7 +807,7 @@
           <p>作为一名开发，查询过滤日志去debug 应该是基本功中的基本功了。今天详细介绍一下这些命令</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/ckiye7cmm001ix6os5yesdgik/#more" rel="contents">
+              <a class="btn" href="/ckjl7zmx1002i88os6oii90us/#more" rel="contents">
                 阅读全文 »
               </a>
             </div>
@@ -857,7 +838,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckiye7cmp001vx6os8lgac6hh/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl7zmwp001n88osgam052g1/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -870,7 +851,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/ckiye7cmp001vx6os8lgac6hh/" class="post-title-link" itemprop="url">MySQL之MVCC</a>
+          <a href="/ckjl7zmwp001n88osgam052g1/" class="post-title-link" itemprop="url">MySQL之MVCC</a>
         </h2>
 
         <div class="post-meta-container">
@@ -918,7 +899,7 @@
 <li>保存时比较版本号，如果成功（commit），则覆盖原记录；失败则放弃copy（rollback）</li></ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/ckiye7cmp001vx6os8lgac6hh/#more" rel="contents">
+              <a class="btn" href="/ckjl7zmwp001n88osgam052g1/#more" rel="contents">
                 阅读全文 »
               </a>
             </div>
@@ -949,7 +930,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckiye7cmt0028x6ose97y958s/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl7zmwv002588os1nqncgfq/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -962,7 +943,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/ckiye7cmt0028x6ose97y958s/" class="post-title-link" itemprop="url">python调用rust与go生成的库文件</a>
+          <a href="/ckjl7zmwv002588os1nqncgfq/" class="post-title-link" itemprop="url">python调用rust与go生成的库文件</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1010,7 +991,7 @@
 </ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/ckiye7cmt0028x6ose97y958s/#more" rel="contents">
+              <a class="btn" href="/ckjl7zmwv002588os1nqncgfq/#more" rel="contents">
                 阅读全文 »
               </a>
             </div>
@@ -1041,7 +1022,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckiye7cmj001cx6osgyp916nt/">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl7zmwy002b88os3d950c4a/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -1054,7 +1035,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/ckiye7cmj001cx6osgyp916nt/" class="post-title-link" itemprop="url">github-ssh协议配置代理</a>
+          <a href="/ckjl7zmwy002b88os3d950c4a/" class="post-title-link" itemprop="url">github-ssh协议配置代理</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1089,23 +1070,16 @@
     
     <div class="post-body" itemprop="articleBody">
           <h4 id="最近git连github经常抽风-使用-git-config-global-http-proxy的方式也没用的状态下，就想搞一下ssh协议走代理"><a href="#最近git连github经常抽风-使用-git-config-global-http-proxy的方式也没用的状态下，就想搞一下ssh协议走代理" class="headerlink" title="最近git连github经常抽风 使用 git config --global http.proxy的方式也没用的状态下，就想搞一下ssh协议走代理"></a>最近git连github经常抽风 使用 <code>git config --global http.proxy</code>的方式也没用的状态下，就想搞一下ssh协议走代理</h4><h4 id="开搞"><a href="#开搞" class="headerlink" title="开搞"></a>开搞</h4><ol>
-<li><p>配置 <code>.ssh/config</code></p>
-<pre class="line-numbers language-config" data-language="config"><code class="language-config">Host github.com 
+<li>配置 <code>.ssh/config</code><pre class="line-numbers language-config" data-language="config"><code class="language-config">Host github.com 
 ProxyCommand ~/.ssh/ssh-https-tunnel %h %p 
 Port 443
 Hostname ssh.github.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
-<li><p>下载 <code>ssh-https-tunnel</code></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">wget</span> http://zwitterion.org/software/ssh-https-tunnel/ssh-https-tunnel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>给脚本加上执行权限</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">chmod</span> +x ~/.ssh/ssh-https-tunnel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p>配置代理地址</p>
-<pre><code class="bash">vim ~/.ssh/ssh-https-tunnel
-# 将下面两项改为你自己的保存即可
-my $proxy = "";
-my $proxy_port = ;</code></pre>
-</li>
+<li>下载 <code>ssh-https-tunnel</code><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">wget</span> http://zwitterion.org/software/ssh-https-tunnel/ssh-https-tunnel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li>给脚本加上执行权限<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">chmod</span> +x ~/.ssh/ssh-https-tunnel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li>配置代理地址<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">vim</span> ~/.ssh/ssh-https-tunnel
+<span class="token comment"># 将下面两项改为你自己的保存即可</span>
+my <span class="token variable">$proxy</span> <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
+my <span class="token variable">$proxy_port</span> <span class="token operator">=</span> <span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
 </ol>
 
       
@@ -1195,8 +1169,6 @@ my $proxy_port = ;</code></pre>
 
 
   
-  
-
 
 
 
@@ -1213,13 +1185,4 @@ my $proxy_port = ;</code></pre>
 
 
 
-
-<script src="/bundle.js"></script><script>
-    (function(){
-      var bp = document.createElement('script');
-      var curProtocol = window.location.protocol.split(':')[0];
-      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(bp, s);
-    })();
-  </script></body></html>
+<script src="/bundle.js"></script></body></html>
