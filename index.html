@@ -190,7 +190,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -203,7 +203,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-count">38</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -244,6 +244,246 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckjl1kyit0001s5ose1veeoo4/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Rumple">
+      <meta itemprop="description" content="后端 架构 容器">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rumplestiltskin's Home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/ckjl1kyit0001s5ose1veeoo4/" class="post-title-link" itemprop="url">k8s之Heketi(四)</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-01-06 14:07:06 / 修改时间：14:31:21" itemprop="dateCreated datePublished" datetime="2021-01-06T14:07:06+08:00">2021-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+          <a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>  在上一篇中，我们搭建了GlusterFS分布式存储集群。其实搭建好之后就可以创建PV以及PVC进行使用了。但是K8S更进一步的提供一个高级抽象StorageClass, 他主要的作用是对用户设置的PVC申请屏 蔽后端存储的细节，一方面减少了用户对于存储资源细节的关注，另一方面减轻了管理员手工管理PV的工作，由系统自动完成PV的创建和绑定，实现了动态的资源供应。</p>
+<h3 id="Heketi"><a href="#Heketi" class="headerlink" title="Heketi"></a>Heketi</h3><p>  heketi是一个提供RESTful API管理gfs卷的框架，能够在kubernetes、openshift、openstack等云平台上实现动态的存储资源供应，支持gfs多集群管理，便于管理员对gfs进行操作，在kubernetes集群中，pod将存储的请求发送至heketi，然后heketi控制gfs集群创建对应的存储卷。<br>heketi动态在集群内选择bricks构建指定的volumes，以确保副本会分散到集群不同的故障域内。<br>heketi还支持任意数量的glusterfs集群，以保证接入的云服务器不局限于单个glusterfs集群。</p>
+<p>  显而易见 如果我们要使用gfs驱动的StroageClass，就需要通过Heketi了。</p>
+<h3 id="安装部署"><a href="#安装部署" class="headerlink" title="安装部署"></a>安装部署</h3><ul>
+<li><p>我们继续在K8S当中进行部署 heketi 服务,创建<code>heketi.yaml</code></p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1   <span class="token comment"># 分配一个账户以供使用</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> ServiceAccount
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> heketi<span class="token punctuation">-</span>service<span class="token punctuation">-</span>account
+
+<span class="token punctuation">---</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Deployment
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> apps/v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> deploy<span class="token punctuation">-</span>heketi
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">glusterfs</span><span class="token punctuation">:</span> heketi<span class="token punctuation">-</span>deployment
+    <span class="token key atrule">deploy-heketi</span><span class="token punctuation">:</span> heketi<span class="token punctuation">-</span>deployment
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
+    <span class="token key atrule">matchLabels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">name</span><span class="token punctuation">:</span> deploy<span class="token punctuation">-</span>heketi
+  <span class="token key atrule">replicas</span><span class="token punctuation">:</span> <span class="token number">1</span>
+  <span class="token key atrule">template</span><span class="token punctuation">:</span>
+    <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+      <span class="token key atrule">name</span><span class="token punctuation">:</span> deploy<span class="token punctuation">-</span>heketi
+      <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+        <span class="token key atrule">name</span><span class="token punctuation">:</span> deploy<span class="token punctuation">-</span>heketi
+        <span class="token key atrule">glusterfs</span><span class="token punctuation">:</span> heketi<span class="token punctuation">-</span>pod
+    <span class="token key atrule">spec</span><span class="token punctuation">:</span>
+      <span class="token key atrule">nodeSelector</span><span class="token punctuation">:</span>
+        <span class="token key atrule">heketi</span><span class="token punctuation">:</span> <span class="token string">"yes"</span>
+      <span class="token key atrule">serviceAccountName</span><span class="token punctuation">:</span> heketi<span class="token punctuation">-</span>service<span class="token punctuation">-</span>account
+      <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> deploy<span class="token punctuation">-</span>heketi
+          <span class="token key atrule">image</span><span class="token punctuation">:</span> heketi/heketi<span class="token punctuation">:</span>latest
+          <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">8080</span>
+          <span class="token key atrule">env</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> HEKETI_CLI_SERVER
+              <span class="token key atrule">value</span><span class="token punctuation">:</span> http<span class="token punctuation">:</span>//localhost<span class="token punctuation">:</span><span class="token number">8080</span>
+          <span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> <span class="token string">"/var/lib/heketi"</span>
+              <span class="token key atrule">name</span><span class="token punctuation">:</span> db
+            <span class="token punctuation">-</span> <span class="token key atrule">mountPath</span><span class="token punctuation">:</span> <span class="token string">"/etc/heketi"</span>  <span class="token comment"># 如果要自定义配置文件可以进行挂载</span>
+              <span class="token key atrule">name</span><span class="token punctuation">:</span> config
+          <span class="token key atrule">readinessProbe</span><span class="token punctuation">:</span>
+            <span class="token key atrule">timeoutSeconds</span><span class="token punctuation">:</span> <span class="token number">3</span>
+            <span class="token key atrule">initialDelaySeconds</span><span class="token punctuation">:</span> <span class="token number">3</span>
+            <span class="token key atrule">httpGet</span><span class="token punctuation">:</span>
+              <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">8080</span>
+              <span class="token key atrule">path</span><span class="token punctuation">:</span> <span class="token string">"/hello"</span>
+          <span class="token key atrule">livenessProbe</span><span class="token punctuation">:</span>
+            <span class="token key atrule">timeoutSeconds</span><span class="token punctuation">:</span> <span class="token number">3</span>
+            <span class="token key atrule">initialDelaySeconds</span><span class="token punctuation">:</span> <span class="token number">30</span>
+            <span class="token key atrule">httpGet</span><span class="token punctuation">:</span>
+              <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">8080</span>
+              <span class="token key atrule">path</span><span class="token punctuation">:</span> <span class="token string">"/hello"</span>
+      <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> db
+          <span class="token key atrule">hostPath</span><span class="token punctuation">:</span>
+            <span class="token key atrule">path</span><span class="token punctuation">:</span> <span class="token string">"/heketi-data"</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> config
+          <span class="token key atrule">hostPath</span><span class="token punctuation">:</span>
+            <span class="token key atrule">path</span><span class="token punctuation">:</span> <span class="token string">"/heketi-config"</span>
+<span class="token punctuation">---</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Service
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> deploy<span class="token punctuation">-</span>heketi
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">glusterfs</span><span class="token punctuation">:</span> heketi<span class="token punctuation">-</span>service
+    <span class="token key atrule">deploy-heketi</span><span class="token punctuation">:</span> support
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> deploy<span class="token punctuation">-</span>heketi
+  <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">8080</span>
+      <span class="token key atrule">name</span><span class="token punctuation">:</span> deploy<span class="token punctuation">-</span>heketi
+      <span class="token key atrule">targetPort</span><span class="token punctuation">:</span> <span class="token number">8080</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>执行 <code>kubectl apply -f heketi.yaml</code></p>
+</li>
+<li><p>创建 GFS 集群</p>
+<ul>
+<li>首先编写<code>topology.json</code>文件拷贝并进入到 heketi pod 当中<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"clusters"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"nodes"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+          <span class="token property">"node"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"hostnames"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+              <span class="token property">"manage"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">"k8s-master"</span>
+              <span class="token punctuation">]</span><span class="token punctuation">,</span>
+              <span class="token property">"storage"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">"192.168.0.1"</span>
+              <span class="token punctuation">]</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"zone"</span><span class="token operator">:</span> <span class="token number">1</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"devices"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"/gluster-data"</span>
+          <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token property">"node"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"hostnames"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+              <span class="token property">"manage"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">"k8s-node-1"</span>
+              <span class="token punctuation">]</span><span class="token punctuation">,</span>
+              <span class="token property">"storage"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">"192.168.0.2"</span>
+              <span class="token punctuation">]</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"zone"</span><span class="token operator">:</span> <span class="token number">1</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"devices"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"/gluster-data"</span>
+          <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token property">"node"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"hostnames"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+              <span class="token property">"manage"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">"k8s-node-2"</span>
+              <span class="token punctuation">]</span><span class="token punctuation">,</span>
+              <span class="token property">"storage"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">"192.168.0.3"</span>
+              <span class="token punctuation">]</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"zone"</span><span class="token operator">:</span> <span class="token number">1</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"devices"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"/gluster-data"</span>
+          <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>执行 <code>heketi-cli --user admin --secret 'My Secret' topology load --json=topology.json</code></li>
+<li>查看集群状态 <code>heketi-cli --user admin --secret 'My Secret' topology info</code></li>
+</ul>
+</li>
+<li><p>创建 StorageClass</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> storage.k8s.io/v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> StorageClass
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> gluster<span class="token punctuation">-</span>heketi
+<span class="token key atrule">provisioner</span><span class="token punctuation">:</span> kubernetes.io/glusterfs <span class="token comment"># 必须</span>
+<span class="token key atrule">parameters</span><span class="token punctuation">:</span>
+  <span class="token key atrule">resturl</span><span class="token punctuation">:</span> <span class="token string">"http://ClusterIP:Port"</span>
+  <span class="token key atrule">restuser</span><span class="token punctuation">:</span> <span class="token string">"admin"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li><p>PVC申请</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">kind</span><span class="token punctuation">:</span> PersistentVolumeClaim
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> pvc<span class="token punctuation">-</span>storage<span class="token punctuation">-</span>class
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">storageClassName</span><span class="token punctuation">:</span> gluster<span class="token punctuation">-</span>heketi
+  <span class="token key atrule">accessModes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> ReadWriteMany
+  <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+    <span class="token key atrule">requests</span><span class="token punctuation">:</span>
+      <span class="token key atrule">storage</span><span class="token punctuation">:</span> 1Gi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1044,99 +1284,6 @@ my $proxy_port = ;</code></pre>
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wuruipeng404.github.io/ckiye7cmr0022x6os08q2a239/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Rumple">
-      <meta itemprop="description" content="后端 架构 容器">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Rumplestiltskin's Home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/ckiye7cmr0022x6os08q2a239/" class="post-title-link" itemprop="url">详解MySQL的事务机制</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-11-10 13:56:05" itemprop="dateCreated datePublished" datetime="2020-11-10T13:56:05+08:00">2020-11-10</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-11-20 10:07:09" itemprop="dateModified" datetime="2020-11-20T10:07:09+08:00">2020-11-20</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-          <a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h4 id="1-什么是事务"><a href="#1-什么是事务" class="headerlink" title="1. 什么是事务"></a>1. 什么是事务</h4><p>  事务就是一组原子性的sql查询，或者说一个独立的工作单元。即事务内的sql语句，要么全部执行成功，要么全部执行失败；</p>
-<h4 id="2-ACID"><a href="#2-ACID" class="headerlink" title="2. ACID"></a>2. ACID</h4><p>  我们都知道事务的四大特性</p>
-<ul>
-<li>原子性(atomicity)：一个事务必须被视为一个不可分割的最小工作单元，整个事务中的所有操作要么全部提交成功，要么全部失败回滚，基于Redo/Undo机制。</li>
-<li>一致性(consistency)：数据库总是从一个一致性状态转移到另一个一致性状态。</li>
-<li>隔离性(isolation)：通常来说，一个事务所做的修改在最终提交前，对其他事务都是不可见的。</li>
-<li>持久性(Durability)：一旦事务提交，则其所做的修改就会永久保存到数据库中；此时即使数据库崩溃，数据也不会丢失。</li></ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/ckiye7cmr0022x6os08q2a239/#more" rel="contents">
-                阅读全文 »
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">…</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
@@ -1172,7 +1319,7 @@ my $proxy_port = ;</code></pre>
 
 <div class="copyright">
   © 2015 – 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
